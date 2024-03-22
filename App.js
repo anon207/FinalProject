@@ -1,6 +1,14 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
+function ChangeMonth() {
+  return(
+    <View style={styles.monthChange}>
+      <Text> Month </Text>
+    </View>
+  );
+}
+
 function DayRow() {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return (
@@ -43,6 +51,7 @@ function Calendar() {
 
   return (
     <ScrollView contentContainerStyle={styles.calendar}>
+      <ChangeMonth/>
       <DayRow/>
       <View style={styles.calendarGrid}>
         {calendarCells.map((index) => (
@@ -71,13 +80,13 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    marginTop: 50,
   },
   calendar: {
     flexDirection: 'column', 
     flexWrap: 'wrap',
   },
   daysRow: {
-    marginTop: 50,
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingHorizontal: 10,
@@ -98,5 +107,9 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'gray',
+  },
+  monthChange: {
+    alignItems: 'center',
+    justifyContent: 'flex',
   },
 });
