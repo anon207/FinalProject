@@ -1,6 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView } from 'react-native';
 
+function DayRow() {
+  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  return (
+    <View style={styles.daysRow}>
+        {days.map((day, index) => (
+          <Day
+            key={index}
+            day={day}
+          />
+        ))}
+    </View>
+  );
+}
+
 function Day(props) {
   const day = props.day;
   return (
@@ -26,18 +40,10 @@ function Calendar() {
   for (let i = 1; i <= 42; i++) {
     calendarCells.push(i);
   }
-  const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
   return (
     <ScrollView contentContainerStyle={styles.calendar}>
-      <View style={styles.daysRow}>
-        {days.map((day, index) => (
-          <Day
-            key={index}
-            day={day}
-          />
-        ))}
-      </View>
+      <DayRow/>
       <View style={styles.calendarGrid}>
         {calendarCells.map((index) => (
           <Cell
@@ -67,7 +73,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   calendar: {
-    flexDirection: 'column', // Changed from 'row' to 'column'
+    flexDirection: 'column', 
     flexWrap: 'wrap',
   },
   daysRow: {
@@ -87,7 +93,7 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
   },
   cell: {
-    height: 70,
+    height: 100,
     width: 52,
     backgroundColor: 'white',
     borderWidth: 1,
