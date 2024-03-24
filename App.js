@@ -3,16 +3,16 @@ import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
 import { useState } from 'react'
 
 function ChangeMonth(props) {
-
+  const { currMonth, onForward, onBackward } = props;
   return(
     <View style={styles.monthChange}>
-      <Pressable>
+      <Pressable onPress={onBackward}>
         <Text style={{fontSize: 30}}>{'<< '}</Text>  
       </Pressable>
 
-      <Text style={{fontSize: 30}}> Month </Text>
+      <Text style={{fontSize: 30}}> {currMonth} </Text>
 
-      <Pressable>
+      <Pressable onPress={onForward}>
         <Text style={{fontSize: 30}}>{' >>'}</Text>
       </Pressable>
     </View>
@@ -55,30 +55,39 @@ function Cell(props) {
 
 function Calendar() {
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const [currentMonth, setCurrentMonth] = useState(months[0]);
+  const [currentMonth, setCurrentMonth] = useState(0);
   const calendarCells = [];
   
-  if(currentMonth === 'January' || currentMonth === 'March' || currentMonth === 'May' || currentMonth === 'July' || currentMonth === 'August' || currentMonth === 'October' || currentMonth === 'December') {
+  if(months[currentMonth] === 'January' || months[currentMonth] === 'March' || months[currentMonth] === 'May' || months[currentMonth] === 'July' || months[currentMonth] === 'August' || months[currentMonth] === 'October' || months[currentMonth] === 'December') {
     for (let i = 1; i <= 31; i++) {
       calendarCells.push(i);
     }
   }
-  if(currentMonth === 'April' || currentMonth === 'June' || currentMonth === 'September' || currentMonth === 'November') {
+  if(months[currentMonth] === 'April' || months[currentMonth] === 'June' || months[currentMonth] === 'September' || months[currentMonth] === 'November') {
     for (let i = 1; i <= 30; i++) {
       calendarCells.push(i);
     }
   }
-  if(currentMonth === 'February') {
+  if(months[currentMonth] === 'February') {
     for (let i = 1; i <= 29; i++) {
       calendarCells.push(i);
     }
   }
 
+  const changeForward = () => {
+    setCurrentMonth(currentMonth === 11 ? 0 : currentMonth + 1);
+  }
+
+  const changeBackward = () => {
+    setCurrentMonth(currentMonth === 0 ? 11 : currentMonth - 1);
+  }
 
   return (
     <ScrollView contentContainerStyle={styles.calendar}>
       <ChangeMonth
-      
+      onForward={() => changeForward()}
+      onBackward={() => changeBackward()}
+      currMonth={months[currentMonth]}
       />
       <DayRow/>
       <View style={styles.calendarGrid}>
@@ -96,7 +105,7 @@ function Calendar() {
 export default function App() {
   return (
     <View style={styles.container}>
-      <Calendar />
+        <Calendar />
       <StatusBar style="auto" />
     </View>
   );
@@ -113,6 +122,7 @@ const styles = StyleSheet.create({
   calendar: {
     flexDirection: 'column', 
     flexWrap: 'wrap',
+    paddingLeft: 2.5
   },
   daysRow: {
     flexDirection: 'row',
@@ -122,7 +132,7 @@ const styles = StyleSheet.create({
   calendarGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center'
+    justifyContent: 'flex-start',
   },
   day: {
     flex: 1,
@@ -131,7 +141,7 @@ const styles = StyleSheet.create({
   },
   cell: {
     height: 100,
-    width: 52,
+    width: 55,
     backgroundColor: 'white',
     borderWidth: 1,
     borderColor: 'gray',
