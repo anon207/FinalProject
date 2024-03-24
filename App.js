@@ -74,10 +74,67 @@ const Calendar = () => {
   );
 };
 
+const MakeFilterButton = ({onClose}) =>{
+  const listSports = ["Baseball",
+  "Men's Basketball",
+  "Women's Basketball",
+  "Men's Cross Country",
+  "Women's Cross Country",
+  "Men's Track & Field",
+  "Women's Track & Field",
+  "Field Hockey",
+  "Men's Soccer",
+  "Women's Soccer",
+  "Men's Volleyball",
+  "Women's Volleyball",
+  "Softball",
+  "Men's Lacrosse",
+  "Women's Lacrosse",
+  "Men's Tennis",
+  "Women's Tennis",
+  "Men's Golf",
+  "Men's Swimming",
+  "Women's Swimming",
+  "Wrestling",
+  "Cycling"];
+
+  return (
+    <View style={styles.popup}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        {listSports.map((item, index) => (
+          <Pressable key={index} onPress={() => console.log(item)}>
+            {({ pressed }) => (
+              <Text style={[styles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
+                {item}
+              </Text>
+            )}
+          </Pressable>
+        ))}
+      </ScrollView>
+      <Button title="Close" onPress={onClose} />
+    </View>
+  );
+};
+
+const FilterButton = () =>{
+const [showPopup,setShowPopup] = useState(false);
+
+const togglePopup = () => {
+  setShowPopup(!showPopup);
+};
+
+return (
+  <View style={styles.container}>
+    <Button title="Show List" onPress={togglePopup} />
+    {showPopup && <MakeFilterButton onClose={togglePopup} />}
+  </View>
+);
+};
 export default function App() {
   return (
     <View style={styles.container}>
       <Calendar />
+      <FilterButton/>
       <StatusBar style="auto" />
     </View>
   );
@@ -122,5 +179,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+  },
+  popup: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    position: 'absolute',
+    transform: [{ translateX: 0 }, { translateY: -250 }],
+  },
+  scrollViewContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
   },
 });
