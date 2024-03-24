@@ -164,12 +164,12 @@ const MakeFilterButton = ({onClose}) =>{
   "Cycling"];
 
   return (
-    <View style={MakeFilterButtonStyles.popup}>
-      <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
+    <View style={styles.popup}>
+      <ScrollView contentContainerStyle={styles.scrollViewContent}>
         {listSports.map((item, index) => (
           <Pressable key={index} onPress={() => console.log(item)}>
             {({ pressed }) => (
-              <Text style={[MakeFilterButtonStyles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
+              <Text style={[styles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
                 {item}
               </Text>
             )}
@@ -376,5 +376,54 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginTop: 50,
+  },
+  calendar: {
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    paddingLeft: 2.5,
+  },
+  daysRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 10,
+  },
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+  day: {
+    flex: 1,
+    alignItems: 'center',
+    paddingVertical: 10,
+  },
+  cell: {
+    height: 100,
+    width: 55,
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'gray',
+  },
+  monthChange: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+  },
+  popup: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    position: 'absolute',
+    transform: [{ translateX: 0 }, { translateY: -250 }],
+  },
+  scrollViewContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
   },
 });
