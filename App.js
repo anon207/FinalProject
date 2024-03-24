@@ -1,10 +1,20 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable } from 'react-native';
+import { useState } from 'react'
 
-function ChangeMonth() {
+function ChangeMonth(props) {
+
   return(
     <View style={styles.monthChange}>
-      <Text> Month </Text>
+      <Pressable>
+        <Text style={{fontSize: 30}}>{'<< '}</Text>  
+      </Pressable>
+
+      <Text style={{fontSize: 30}}> Month </Text>
+
+      <Pressable>
+        <Text style={{fontSize: 30}}>{' >>'}</Text>
+      </Pressable>
     </View>
   );
 }
@@ -44,14 +54,32 @@ function Cell(props) {
 }
 
 function Calendar() {
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const [currentMonth, setCurrentMonth] = useState(months[0]);
   const calendarCells = [];
-  for (let i = 1; i <= 42; i++) {
-    calendarCells.push(i);
+  
+  if(currentMonth === 'January' || currentMonth === 'March' || currentMonth === 'May' || currentMonth === 'July' || currentMonth === 'August' || currentMonth === 'October' || currentMonth === 'December') {
+    for (let i = 1; i <= 31; i++) {
+      calendarCells.push(i);
+    }
   }
+  if(currentMonth === 'April' || currentMonth === 'June' || currentMonth === 'September' || currentMonth === 'November') {
+    for (let i = 1; i <= 30; i++) {
+      calendarCells.push(i);
+    }
+  }
+  if(currentMonth === 'February') {
+    for (let i = 1; i <= 29; i++) {
+      calendarCells.push(i);
+    }
+  }
+
 
   return (
     <ScrollView contentContainerStyle={styles.calendar}>
-      <ChangeMonth/>
+      <ChangeMonth
+      
+      />
       <DayRow/>
       <View style={styles.calendarGrid}>
         {calendarCells.map((index) => (
@@ -110,6 +138,7 @@ const styles = StyleSheet.create({
   },
   monthChange: {
     alignItems: 'center',
-    justifyContent: 'flex',
+    justifyContent: 'center',
+    flexDirection: 'row',
   },
 });
