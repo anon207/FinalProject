@@ -1,6 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Pressable, Button } from 'react-native';
 import { useState } from 'react';
+import SportsData from './SportsData.json';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={styles.monthChange}>
@@ -31,11 +32,23 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day }) => (
-  <View style={styles.cell}>
-    <Text>{day}</Text>
-  </View>
-);
+const Cell = ({ day, currentMonth }) => {
+  currentMonth+=1;
+  const fullDate = `2024-${currentMonth > 9 ? currentMonth : '0' + currentMonth}-${day > 9 ? day : '0' + day}`;
+  const eventsOfDay = SportsData.filter(event => event.date === fullDate);
+  return(
+    <View style={styles.cell}>
+      <Text>{day}</Text>
+      {eventsOfDay.map((event, index) => (
+        <View key={index}> 
+          <Text>{event.name}</Text>
+          <Text>{event.time}</Text>
+          <Text>{event.location}</Text>
+        </View>
+      ))}
+    </View>
+  );
+};
 
 const Calendar = () => {
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -67,7 +80,7 @@ const Calendar = () => {
       <DayRow />
       <View style={styles.calendarGrid}>
         {calendarCells.map((day) => (
-          <Cell key={day} day={day} />
+          <Cell key={day} day={day} currentMonth={currentMonth} />
         ))}
       </View>
     </ScrollView>
@@ -187,7 +200,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     position: 'absolute',
-    transform: [{ translateX: 0 }, { translateY: -250 }],
+    transform: [{ translateX: 0 }, { translateY: -265 }],
   },
   scrollViewContent: {
     flexDirection: 'row',
