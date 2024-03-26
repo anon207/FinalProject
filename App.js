@@ -33,17 +33,12 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day, currentMonth }) => {
+const Cell = ({ day, currentMonth, toggleEvents }) => {
   currentMonth+=1;
   const fullDate = `2024-${currentMonth > 9 ? currentMonth : '0' + currentMonth}-${day > 9 ? day : '0' + day}`;
   const eventsOfDay = SportsData.filter(event => event.date === fullDate);
-
-  // const showEvents = () => {
-
-  // };
-
   return(
-    <Pressable>
+    <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
         <View style={[styles.cell, pressed && styles.pressedCell]}>
           <View style={styles.cellDay}>
@@ -68,7 +63,23 @@ const Cell = ({ day, currentMonth }) => {
           </View>
         ))} */}
 
+const CalendarRow = ({ days, currentMonth, toggleEvents}) => {
+  return (
+    <View style={styles.calendarGrid}>
+      {days.map(day => (
+        <Cell key={day} day={day} currentMonth={currentMonth} toggleEvents={toggleEvents}/>
+      ))}
+    </View>
+  );
+};
+
 const Calendar = () => {
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  const toggleEvents = (day) => {
+    setSelectedDay(selectedDay === day ? null : day);
+  };
+
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const [currentMonth, setCurrentMonth] = useState(0);
 
@@ -88,6 +99,16 @@ const Calendar = () => {
     setCurrentMonth((prevMonth) => (prevMonth + increment + 12) % 12);
   };
 
+  const calendarRows = [];
+  let currentRow = [];
+  for (let i = 1; i <= daysInMonth(months[currentMonth]); i++) {
+    currentRow.push(i);
+    if (currentRow.length === 7 || i === daysInMonth(months[currentMonth])) {
+      calendarRows.push([...currentRow]);
+      currentRow = [];
+    }
+  }
+
   return (
     <ScrollView contentContainerStyle={styles.calendar}>
       <ChangeMonth
@@ -97,10 +118,17 @@ const Calendar = () => {
       />
       <DayRow />
       <View style={styles.calendarGrid}>
-        {calendarCells.map((day) => (
-          <Cell key={day} day={day} currentMonth={currentMonth} />
-        ))}
-      </View>
+      {calendarRows.map((days, index) => (
+        <View key={index}>
+          <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents}/>
+          {calendarRows[index].includes(selectedDay) && (
+              <View style={styles.eventsContainer}>
+                {/* Render your events under the selected day */}
+              </View>
+            )}
+        </View>
+      ))}
+    </View>
     </ScrollView>
   );
 };
@@ -257,5 +285,10 @@ const styles = StyleSheet.create({
   },
   pressedCell: {
     backgroundColor: 'rgba(173, 216, 230, 0.5)',
+  },
+  eventsContainer: {
+    height: 100,
+    width: 385,
+    backgroundColor: 'black'   
   },
 });
