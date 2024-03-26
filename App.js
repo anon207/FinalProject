@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Pressable, Button } from 'react-nat
 import { useState } from 'react';
 import SportsData from './SportsData.json';
 
+
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={styles.monthChange}>
     <Pressable onPress={onBackward}>
@@ -38,14 +39,22 @@ const Cell = ({ day, currentMonth }) => {
   const eventsOfDay = SportsData.filter(event => event.date === fullDate);
   return(
     <View style={styles.cell}>
-      <Text>{day}</Text>
-      {eventsOfDay.map((event, index) => (
+      <View style={styles.cellDay}>
+        <Text style={styles.dayText}>{day}</Text>
+      </View>
+
+      <View style={styles.eventPosition}>
+        {eventsOfDay.length > 0 &&
+        <Text style={styles.evt}>{eventsOfDay.length} Events</Text>
+        }
+      </View>
+      {/* {eventsOfDay.map((event, index) => (
         <View key={index}> 
           <Text>{event.name}</Text>
           <Text>{event.time}</Text>
           <Text>{event.location}</Text>
         </View>
-      ))}
+      ))} */}
     </View>
   );
 };
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     position: 'absolute',
-    transform: [{ translateX: 0 }, { translateY: -265 }],
+    transform: [{ translateX: 0 }, { translateY: -290 }],
   },
   scrollViewContent: {
     flexDirection: 'row',
@@ -209,5 +218,25 @@ const styles = StyleSheet.create({
   item: {
     padding: 10,
     fontSize: 18,
+  },
+  cellDay: {
+    flex: 1,
+    alignItems: 'center',
+    paddingTop: 15,
+  },
+  dayText: {
+    fontFamily: 'RobotoCondensed-Bold',
+    fontWeight: 'bold',
+    fontSize: 18,
+  },
+  evt: {
+    fontFamily: 'RobotoCondensed-Bold',
+    fontWeight: 'bold',
+    fontSize: 10,
+    color: '#666666'
+  },
+  eventPosition: {
+    alignItems: 'center',
+    paddingBottom: 15,
   },
 });
