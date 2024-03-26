@@ -29,7 +29,7 @@ const DayRow = () => {
 
 const Day = ({ day }) => (
   <View style={styles.day}>
-    <Text style={{ fontSize: 16 }}>{day}</Text>
+    <Text style={styles.dayFont}>{day}</Text>
   </View>
 );
 
@@ -37,27 +37,36 @@ const Cell = ({ day, currentMonth }) => {
   currentMonth+=1;
   const fullDate = `2024-${currentMonth > 9 ? currentMonth : '0' + currentMonth}-${day > 9 ? day : '0' + day}`;
   const eventsOfDay = SportsData.filter(event => event.date === fullDate);
-  return(
-    <View style={styles.cell}>
-      <View style={styles.cellDay}>
-        <Text style={styles.dayText}>{day}</Text>
-      </View>
 
-      <View style={styles.eventPosition}>
-        {eventsOfDay.length > 0 &&
-        <Text style={styles.evt}>{eventsOfDay.length} Events</Text>
-        }
-      </View>
-      {/* {eventsOfDay.map((event, index) => (
-        <View key={index}> 
-          <Text>{event.name}</Text>
-          <Text>{event.time}</Text>
-          <Text>{event.location}</Text>
+  // const showEvents = () => {
+
+  // };
+
+  return(
+    <Pressable>
+      {({ pressed }) => (
+        <View style={[styles.cell, pressed && styles.pressedCell]}>
+          <View style={styles.cellDay}>
+            <Text style={styles.dayText}>{day}</Text>
+          </View>
+          <View style={styles.eventPosition}>
+            {eventsOfDay.length > 0 && 
+              <Text style={styles.evt}>{eventsOfDay.length} Events</Text>
+            }
+          </View>
         </View>
-      ))} */}
-    </View>
+      )}
+    </Pressable>
   );
 };
+
+{/* {eventsOfDay.map((event, index) => (
+          <View key={index}> 
+            <Text>{event.name}</Text>
+            <Text>{event.time}</Text>
+            <Text>{event.location}</Text>
+          </View>
+        ))} */}
 
 const Calendar = () => {
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -178,7 +187,7 @@ const styles = StyleSheet.create({
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
-    paddingHorizontal: 10,
+    paddingVertical: 10,
   },
   calendarGrid: {
     flexDirection: 'row',
@@ -201,6 +210,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'row',
+    paddingBottom: 10,
   },
   popup: {
     backgroundColor: '#fff',
@@ -238,5 +248,14 @@ const styles = StyleSheet.create({
   eventPosition: {
     alignItems: 'center',
     paddingBottom: 15,
+  },
+  dayFont: {
+    fontFamily: 'RobotoCondensed-Bold',
+    fontWeight: 'bold',
+    fontSize: 18, 
+    color: '#666666'
+  },
+  pressedCell: {
+    backgroundColor: 'rgba(173, 216, 230, 0.5)',
   },
 });
