@@ -70,21 +70,32 @@ const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay}) => {
   );
 };
 
+const HomeAwayBox = () => {
+  return(
+    <View style={HomeAwayBoxStyles.eventsContainer}>
+    <View style={HomeAwayBoxStyles.evtView}> 
+      <View style={HomeAwayBoxStyles.homeCircle}/>
+      <Text>Home</Text>
+    </View>
+    <View style={HomeAwayBoxStyles.evtView}> 
+      <View style={HomeAwayBoxStyles.awayCircle}/>
+      <Text>Away</Text>
+    </View>
+  </View>
+  );
+};
+
 const Calendar = () => {
   const [selectedDay, setSelectedDay] = useState(null);
-
-  const toggleEvents = (day) => {
-    setSelectedDay(selectedDay === day ? null : day);
-  };
-
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const [currentMonth, setCurrentMonth] = useState(0);
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+  const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
   const daysInMonth = (month) => {
     if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
     if (['April', 'June', 'September', 'November'].includes(month)) return 30;
-    if (month === 'February') return 29;
-    return 0;
+    return month === 'February' ? 29 : 0;
   };
 
   const calendarCells = [];
@@ -119,17 +130,8 @@ const Calendar = () => {
         <View key={index}>
           <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents} selectedDay={selectedDay}/>
           {calendarRows[index].includes(selectedDay) && (
-              <View style={CalendarStyles.eventsContainer}>
-                <View style={CalendarStyles.evtView}> 
-                  <View style={CalendarStyles.homeCircle}/>
-                  <Text>Home</Text>
-                </View>
-                <View style={CalendarStyles.evtView}> 
-                  <View style={CalendarStyles.awayCircle}/>
-                  <Text>Away</Text>
-                </View>
-              </View>
-            )}
+            <HomeAwayBox/>
+          )}
         </View>
       ))}
     </View>
@@ -311,6 +313,29 @@ const CalendarStyles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingLeft: 2.5,
   },
+});
+
+const MakeFilterButtonStyles = StyleSheet.create({
+  popup: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    position: 'absolute',
+    transform: [{ translateX: 0 }, { translateY: -290 }],
+  },
+  scrollViewContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+  },
+  item: {
+    padding: 10,
+    fontSize: 18,
+  },
+});
+
+const HomeAwayBoxStyles = StyleSheet.create({
   eventsContainer: {
     height: 66,
     width: 385,
@@ -341,26 +366,6 @@ const CalendarStyles = StyleSheet.create({
   evtView: {
     flexDirection: 'row',
     paddingHorizontal: 10,
-  },
-});
-
-const MakeFilterButtonStyles = StyleSheet.create({
-  popup: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    position: 'absolute',
-    transform: [{ translateX: 0 }, { translateY: -290 }],
-  },
-  scrollViewContent: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
   },
 });
 
