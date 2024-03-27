@@ -3,7 +3,6 @@ import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-nati
 import { useState } from 'react';
 import SportsData from './SportsData.json';
 
-
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={styles.monthChange}>
     <Pressable onPress={onBackward}>
@@ -33,20 +32,26 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day, currentMonth, toggleEvents }) => {
+const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
   currentMonth+=1;
   const fullDate = `2024-${currentMonth > 9 ? currentMonth : '0' + currentMonth}-${day > 9 ? day : '0' + day}`;
   const eventsOfDay = SportsData.filter(event => event.date === fullDate);
   return(
     <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
-        <View style={[styles.cell, pressed && styles.pressedCell]}>
+        <View style={[styles.cell, isSelected && styles.selectedCell, pressed && styles.pressedCell]}>
           <View style={styles.cellDay}>
             <Text style={styles.dayText}>{day}</Text>
           </View>
           <View style={styles.eventPosition}>
-            {eventsOfDay.length > 0 && 
+            {(eventsOfDay.length && !isSelected) > 0 && 
               <Text style={styles.evt}>{eventsOfDay.length} Events</Text>
+            }
+            {isSelected &&
+            <View style={styles.Xcontainer}>
+              <View style={[styles.line, styles.lineDiagonalLeft]} />
+              <View style={[styles.line, styles.lineDiagonalRight]} />
+            </View>
             }
           </View>
         </View>
@@ -55,19 +60,11 @@ const Cell = ({ day, currentMonth, toggleEvents }) => {
   );
 };
 
-{/* {eventsOfDay.map((event, index) => (
-          <View key={index}> 
-            <Text>{event.name}</Text>
-            <Text>{event.time}</Text>
-            <Text>{event.location}</Text>
-          </View>
-        ))} */}
-
-const CalendarRow = ({ days, currentMonth, toggleEvents}) => {
+const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay}) => {
   return (
     <View style={styles.calendarGrid}>
       {days.map(day => (
-        <Cell key={day} day={day} currentMonth={currentMonth} toggleEvents={toggleEvents}/>
+        <Cell key={day} day={day} currentMonth={currentMonth} toggleEvents={toggleEvents} isSelected={selectedDay === day}/>
       ))}
     </View>
   );
@@ -120,10 +117,17 @@ const Calendar = () => {
       <View style={styles.calendarGrid}>
       {calendarRows.map((days, index) => (
         <View key={index}>
-          <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents}/>
+          <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents} selectedDay={selectedDay}/>
           {calendarRows[index].includes(selectedDay) && (
               <View style={styles.eventsContainer}>
-                {/* Render your events under the selected day */}
+                <View style={styles.evtView}> 
+                  <View style={styles.homeCircle}/>
+                  <Text>Home</Text>
+                </View>
+                <View style={styles.evtView}> 
+                  <View style={styles.awayCircle}/>
+                  <Text>Away</Text>
+                </View>
               </View>
             )}
         </View>
@@ -232,7 +236,7 @@ const styles = StyleSheet.create({
     width: 55,
     backgroundColor: 'white',
     borderWidth: 1,
-    borderColor: 'gray',
+    borderColor: 'lightgray',
   },
   monthChange: {
     alignItems: 'center',
@@ -287,8 +291,59 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(173, 216, 230, 0.5)',
   },
   eventsContainer: {
-    height: 100,
+    height: 66,
     width: 385,
-    backgroundColor: 'black'   
+    backgroundColor: 'white',
+    alignItems: 'center',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    borderTopColor: 'white',
+  },
+  homeCircle: {
+    width: 10,
+    height: 10,
+    backgroundColor: 'maroon',
+    borderRadius: 10,
+    marginTop: 3,
+    marginRight: 8, 
+  },
+  awayCircle: {
+    width: 10,
+    height: 10,
+    backgroundColor: 'lightgray',
+    borderRadius: 10,
+    marginTop: 3,
+    marginRight: 8,
+  },
+  evtView: {
+    flexDirection: 'row',
+    paddingHorizontal: 10,
+  },
+  selectedCell: {
+    borderBottomColor: 'white'
+  },
+  Xcontainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 25,
+  },
+  line: {
+    position: 'absolute',
+    backgroundColor: 'black',
+  },
+  lineDiagonalLeft: {
+    width: 5,
+    height: 18,
+    borderRadius: 1,
+    transform: [{ rotate: '45deg' }],
+  },
+  lineDiagonalRight: {
+    width: 5,
+    height: 18,
+    borderRadius: 1,
+    transform: [{ rotate: '-45deg' }],
   },
 });
