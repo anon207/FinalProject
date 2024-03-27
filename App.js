@@ -4,7 +4,7 @@ import { useState } from 'react';
 import SportsData from './SportsData.json';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
-  <View style={styles.monthChange}>
+  <View style={ChangeMonthStyles.monthChange}>
     <Pressable onPress={onBackward}>
       <Text style={{ fontSize: 30 }}>{'<< '}</Text>
     </Pressable>
@@ -18,7 +18,7 @@ const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
 const DayRow = () => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   return (
-    <View style={styles.daysRow}>
+    <View style={DayRowStyles.daysRow}>
       {days.map((day, index) => (
         <Day key={index} day={day} />
       ))}
@@ -27,8 +27,8 @@ const DayRow = () => {
 };
 
 const Day = ({ day }) => (
-  <View style={styles.day}>
-    <Text style={styles.dayFont}>{day}</Text>
+  <View style={DayStyles.day}>
+    <Text style={DayStyles.dayFont}>{day}</Text>
   </View>
 );
 
@@ -39,18 +39,18 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
   return(
     <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
-        <View style={[styles.cell, isSelected && styles.selectedCell, pressed && styles.pressedCell]}>
-          <View style={styles.cellDay}>
-            <Text style={styles.dayText}>{day}</Text>
+        <View style={[CellStyles.cell, isSelected && CellStyles.selectedCell, pressed && CellStyles.pressedCell]}>
+          <View style={CellStyles.cellDay}>
+            <Text style={CellStyles.dayText}>{day}</Text>
           </View>
-          <View style={styles.eventPosition}>
+          <View style={CellStyles.eventPosition}>
             {(eventsOfDay.length && !isSelected) > 0 && 
-              <Text style={styles.evt}>{eventsOfDay.length} Events</Text>
+              <Text style={CellStyles.evt}>{eventsOfDay.length} Events</Text>
             }
             {isSelected &&
-            <View style={styles.Xcontainer}>
-              <View style={[styles.line, styles.lineDiagonalLeft]} />
-              <View style={[styles.line, styles.lineDiagonalRight]} />
+            <View style={CellStyles.Xcontainer}>
+              <View style={[CellStyles.line, CellStyles.lineDiagonalLeft]} />
+              <View style={[CellStyles.line, CellStyles.lineDiagonalRight]} />
             </View>
             }
           </View>
@@ -62,7 +62,7 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
 
 const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay}) => {
   return (
-    <View style={styles.calendarGrid}>
+    <View style={CalendarRowStyles.calendarGrid}>
       {days.map(day => (
         <Cell key={day} day={day} currentMonth={currentMonth} toggleEvents={toggleEvents} isSelected={selectedDay === day}/>
       ))}
@@ -107,25 +107,25 @@ const Calendar = () => {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.calendar}>
+    <ScrollView contentContainerStyle={CalendarStyles.calendar}>
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
         currMonth={months[currentMonth]}
       />
       <DayRow />
-      <View style={styles.calendarGrid}>
+      <View style={CalendarStyles.calendarGrid}>
       {calendarRows.map((days, index) => (
         <View key={index}>
           <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents} selectedDay={selectedDay}/>
           {calendarRows[index].includes(selectedDay) && (
-              <View style={styles.eventsContainer}>
-                <View style={styles.evtView}> 
-                  <View style={styles.homeCircle}/>
+              <View style={CalendarStyles.eventsContainer}>
+                <View style={CalendarStyles.evtView}> 
+                  <View style={CalendarStyles.homeCircle}/>
                   <Text>Home</Text>
                 </View>
-                <View style={styles.evtView}> 
-                  <View style={styles.awayCircle}/>
+                <View style={CalendarStyles.evtView}> 
+                  <View style={CalendarStyles.awayCircle}/>
                   <Text>Away</Text>
                 </View>
               </View>
@@ -162,12 +162,12 @@ const MakeFilterButton = ({onClose}) =>{
   "Cycling"];
 
   return (
-    <View style={styles.popup}>
-      <ScrollView contentContainerStyle={styles.scrollViewContent}>
+    <View style={MakeFilterButtonStyles.popup}>
+      <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
         {listSports.map((item, index) => (
           <Pressable key={index} onPress={() => console.log(item)}>
             {({ pressed }) => (
-              <Text style={[styles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
+              <Text style={[MakeFilterButtonStyles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
                 {item}
               </Text>
             )}
@@ -203,34 +203,38 @@ export default function App() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
+const ChangeMonthStyles = StyleSheet.create({
+  monthChange: {
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 50,
+    flexDirection: 'row',
+    paddingBottom: 10,
   },
-  calendar: {
-    flexDirection: 'column',
-    flexWrap: 'wrap',
-    paddingLeft: 2.5,
-  },
+});
+
+const DayRowStyles = StyleSheet.create({
   daysRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     paddingVertical: 10,
   },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    justifyContent: 'flex-start',
-  },
+});
+
+const DayStyles = StyleSheet.create({
   day: {
     flex: 1,
     alignItems: 'center',
     paddingVertical: 10,
   },
+  dayFont: {
+    fontFamily: 'RobotoCondensed-Bold',
+    fontWeight: 'bold',
+    fontSize: 18, 
+    color: '#666666'
+  },
+});
+
+const CellStyles = StyleSheet.create({
   cell: {
     height: 100,
     width: 55,
@@ -238,28 +242,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
   },
-  monthChange: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-    paddingBottom: 10,
+  selectedCell: {
+    borderBottomColor: 'white'
   },
-  popup: {
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 10,
-    borderWidth: 1,
-    borderColor: '#ccc',
-    position: 'absolute',
-    transform: [{ translateX: 0 }, { translateY: -290 }],
-  },
-  scrollViewContent: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  item: {
-    padding: 10,
-    fontSize: 18,
+  pressedCell: {
+    backgroundColor: 'rgba(173, 216, 230, 0.5)',
   },
   cellDay: {
     flex: 1,
@@ -271,24 +258,58 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 18,
   },
+  eventPosition: {
+    alignItems: 'center',
+    paddingBottom: 15,
+  },
   evt: {
     fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 10,
     color: '#666666'
   },
-  eventPosition: {
+  Xcontainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
     alignItems: 'center',
-    paddingBottom: 15,
+    paddingBottom: 25,
   },
-  dayFont: {
-    fontFamily: 'RobotoCondensed-Bold',
-    fontWeight: 'bold',
-    fontSize: 18, 
-    color: '#666666'
+  line: {
+    position: 'absolute',
+    backgroundColor: 'black',
   },
-  pressedCell: {
-    backgroundColor: 'rgba(173, 216, 230, 0.5)',
+  lineDiagonalLeft: {
+    width: 5,
+    height: 18,
+    borderRadius: 1,
+    transform: [{ rotate: '45deg' }],
+  },
+  lineDiagonalRight: {
+    width: 5,
+    height: 18,
+    borderRadius: 1,
+    transform: [{ rotate: '-45deg' }],
+  },
+});
+
+const CalendarRowStyles = StyleSheet.create({
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+});
+
+const CalendarStyles = StyleSheet.create({
+  calendarGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
+  },
+  calendar: {
+    flexDirection: 'column',
+    flexWrap: 'wrap',
+    paddingLeft: 2.5,
   },
   eventsContainer: {
     height: 66,
@@ -321,29 +342,34 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 10,
   },
-  selectedCell: {
-    borderBottomColor: 'white'
-  },
-  Xcontainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingBottom: 25,
-  },
-  line: {
+});
+
+const MakeFilterButtonStyles = StyleSheet.create({
+  popup: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
     position: 'absolute',
-    backgroundColor: 'black',
+    transform: [{ translateX: 0 }, { translateY: -290 }],
   },
-  lineDiagonalLeft: {
-    width: 5,
-    height: 18,
-    borderRadius: 1,
-    transform: [{ rotate: '45deg' }],
+  scrollViewContent: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
   },
-  lineDiagonalRight: {
-    width: 5,
-    height: 18,
-    borderRadius: 1,
-    transform: [{ rotate: '-45deg' }],
+  item: {
+    padding: 10,
+    fontSize: 18,
+  },
+});
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 50,
   },
 });
