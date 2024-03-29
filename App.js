@@ -32,10 +32,7 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
-  currentMonth+=1;
-  const fullDate = `2024-${currentMonth > 9 ? currentMonth : '0' + currentMonth}-${day > 9 ? day : '0' + day}`;
-  const eventsOfDay = SportsData.filter(event => event.date === fullDate);
+const Cell = ({ day, currentMonth, toggleEvents, isSelected,filteredEvents }) => {
   return(
     <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
@@ -44,8 +41,8 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
             <Text style={CellStyles.dayText}>{day}</Text>
           </View>
           <View style={CellStyles.eventPosition}>
-            {(eventsOfDay.length && !isSelected) > 0 && 
-              <Text style={CellStyles.evt}>{eventsOfDay.length} Events</Text>
+            {(filteredEvents.length > 0) && (!isSelected) && 
+              <Text style={CellStyles.evt}>{filteredEvents.length} Events</Text>
             }
             {isSelected &&
             <View style={CellStyles.Xcontainer}>
@@ -60,12 +57,29 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected }) => {
   );
 };
 
-const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay}) => {
+
+const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay,filteredEvents}) => {
   return (
     <View style={CalendarRowStyles.calendarGrid}>
-      {days.map(day => (
-        <Cell key={day} day={day} currentMonth={currentMonth} toggleEvents={toggleEvents} isSelected={selectedDay === day}/>
-      ))}
+      {days.map(day => {
+        const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+        const formattedDay = day < 10 ? `0${day}` : day;
+        const fullDate = `2024-${formattedMonth}-${formattedDay}`;
+
+        // Filter events for this specific day
+        const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
+
+        return (
+          <Cell 
+            key={day}
+            day={day}
+            currentMonth={currentMonth}
+            toggleEvents={toggleEvents}
+            isSelected={selectedDay === day}
+            filteredEvents={eventsForDay} // Passing filtered events specific to this day
+          />
+        );
+      })}
     </View>
   );
 };
@@ -85,7 +99,7 @@ const HomeAwayBox = () => {
   );
 };
 
-const Calendar = () => {
+const Calendar = ({filteredEvents}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -128,7 +142,13 @@ const Calendar = () => {
       <View style={CalendarStyles.calendarGrid}>
       {calendarRows.map((days, index) => (
         <View key={index}>
-          <CalendarRow key={index} days={days} currentMonth={currentMonth} toggleEvents={toggleEvents} selectedDay={selectedDay}/>
+          <CalendarRow key={index}
+           days={days} 
+           currentMonth={currentMonth}
+            toggleEvents={toggleEvents} 
+            selectedDay={selectedDay}
+            filteredEvents={filteredEvents}
+            />
           {calendarRows[index].includes(selectedDay) && (
             <HomeAwayBox/>
           )}
@@ -139,7 +159,7 @@ const Calendar = () => {
   );
 };
 
-const MakeFilterButton = ({onClose}) =>{
+const MakeFilterButton = ({onClose,applyFilter,selectedTeams,setSelectedTeams}) =>{
   const listSports = ["Baseball",
   "Men's Basketball",
   "Women's Basketball",
@@ -163,25 +183,39 @@ const MakeFilterButton = ({onClose}) =>{
   "Wrestling",
   "Cycling"];
 
+  const toggleTeamSelection = (team) => {
+    if (!selectedTeams) {
+      setSelectedTeams([team]); // Initialize selectedTeams as an array with the first selected team
+    } else if (selectedTeams.includes(team)) {
+      setSelectedTeams(selectedTeams.filter(selectedTeam => selectedTeam !== team));
+    } else {
+      setSelectedTeams([...selectedTeams, team]);
+    }
+  };
+
   return (
     <View style={MakeFilterButtonStyles.popup}>
-      <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
-        {listSports.map((item, index) => (
-          <Pressable key={index} onPress={() => console.log(item)}>
-            {({ pressed }) => (
-              <Text style={[MakeFilterButtonStyles.item, { backgroundColor: pressed ? '#ddd' : 'transparent' }]}>
-                {item}
-              </Text>
-            )}
-          </Pressable>
-        ))}
-      </ScrollView>
-      <Button title="Close" onPress={onClose} />
-    </View>
-  );
+  <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
+    {listSports.map((item, index) => (
+      <Pressable key={index} onPress={() => toggleTeamSelection(item)}>
+        {({ pressed }) => (
+          <Text style={[MakeFilterButtonStyles.item, { backgroundColor: selectedTeams.includes(item) ? '#ccc' : pressed ? '#ddd' : 'transparent' }]}>
+            {item}
+          </Text>
+        )}
+      </Pressable>
+    ))}
+  </ScrollView>
+  <View style={MakeFilterButtonStyles.buttonContainer}>
+    <Button title="Apply" onPress={applyFilter} />
+    <Button title="Close" onPress={onClose} />
+  </View>
+</View>
+);
 };
 
-const FilterButton = () =>{
+
+const FilterButton = ({applyFilter,selectedTeams,setSelectedTeams}) =>{
 const [showPopup,setShowPopup] = useState(false);
 
 const togglePopup = () => {
@@ -191,15 +225,28 @@ const togglePopup = () => {
 return (
   <View style={styles.container}>
     <Button title="Show List" onPress={togglePopup} />
-    {showPopup && <MakeFilterButton onClose={togglePopup} />}
+    {showPopup && <MakeFilterButton onClose={togglePopup}applyFilter={applyFilter} selectedTeams={selectedTeams}setSelectedTeams={setSelectedTeams} />}
   </View>
 );
 };
 export default function App() {
+  const [selectedTeams,setSelectedTeams]=useState([]);
+  const [filteredEvents, setFilteredEvents] = useState(SportsData);
+
+  const changeEvents = (selectedTeams) => {
+    const filteredEvents = SportsData.filter(event => selectedTeams.includes(event.name));
+    return filteredEvents;
+};
+
+  const applyFilter = () => {
+    const events = changeEvents(selectedTeams);
+    setFilteredEvents(events);
+  };
+
   return (
     <View style={styles.container}>
-      <Calendar />
-      <FilterButton/>
+      <Calendar filteredEvents={filteredEvents}/>
+      <FilterButton applyFilter={applyFilter} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </View>
   );
