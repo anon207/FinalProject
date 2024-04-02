@@ -103,7 +103,12 @@ const Calendar = ({filteredEvents}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+  const formattedDay = selectedDay < 10 ? `0${selectedDay}` : selectedDay;
+  const fullDate = `2024-${formattedMonth}-${formattedDay}`;
 
+  const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
+  console.log(eventsForDay.length);
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
   const daysInMonth = (month) => {
@@ -152,6 +157,13 @@ const Calendar = ({filteredEvents}) => {
           {calendarRows[index].includes(selectedDay) && (
             <HomeAwayBox/>
           )}
+          {/*eventsForDay.length > 0*/calendarRows[index].includes(selectedDay) && eventsForDay.map((event, index) => (
+            <View key={index} style={CalendarStyles.EventDisplay}> 
+              <Text>{event.name}</Text>
+              <Text>{event.time}</Text>
+              <Text>{event.location}</Text>
+            </View>
+          ))}
         </View>
       ))}
     </View>
@@ -276,7 +288,7 @@ const DayStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   dayFont: {
-    fontFamily: 'RobotoCondensed-Bold',
+    //fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 18, 
     color: '#666666'
@@ -303,7 +315,7 @@ const CellStyles = StyleSheet.create({
     paddingTop: 15,
   },
   dayText: {
-    fontFamily: 'RobotoCondensed-Bold',
+    //fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 18,
   },
@@ -312,7 +324,7 @@ const CellStyles = StyleSheet.create({
     paddingBottom: 15,
   },
   evt: {
-    fontFamily: 'RobotoCondensed-Bold',
+    //fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 10,
     color: '#666666'
@@ -360,6 +372,10 @@ const CalendarStyles = StyleSheet.create({
     flexWrap: 'wrap',
     paddingLeft: 2.5,
   },
+  EventDisplay: {
+    width: 100,
+    height: 100,
+  }
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
