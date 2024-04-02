@@ -373,8 +373,11 @@ const CalendarStyles = StyleSheet.create({
     paddingLeft: 2.5,
   },
   EventDisplay: {
-    width: 100,
+    width: 385,
     height: 100,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    marginBottom: 20,
   }
 });
 
@@ -409,6 +412,7 @@ const HomeAwayBoxStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     borderTopColor: 'white',
+    marginBottom: 20,
   },
   homeCircle: {
     width: 10,
