@@ -42,7 +42,7 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected, filteredEvents }) =
   return(
     <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
-        <View style={[CellStyles.cell, isSelected && CellStyles.selectedCell, pressed && CellStyles.pressedCell]}>
+        <View style={[CellStyles.cell, (filteredEvents.length > 0 && isSelected) && CellStyles.selectedCell, (filteredEvents.length > 0 && pressed) && CellStyles.pressedCell]}>
           <View style={CellStyles.cellDay}>
             <Text style={CellStyles.dayText}>{day}</Text>
           </View>
@@ -53,7 +53,7 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected, filteredEvents }) =
             {containsHome &&
               <View style={CellStyles.HomeStyle}/>
             }
-            {isSelected &&
+            {(isSelected && filteredEvents.length > 0) &&
             <View style={CellStyles.Xcontainer}>
               <View style={[CellStyles.line, CellStyles.lineDiagonalLeft]} />
               <View style={[CellStyles.line, CellStyles.lineDiagonalRight]} />
@@ -117,7 +117,7 @@ const Calendar = ({filteredEvents}) => {
   const fullDate = `2024-${formattedMonth}-${formattedDay}`;
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
-  console.log(eventsForDay.length);
+  
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
   const daysInMonth = (month) => {
@@ -163,7 +163,7 @@ const Calendar = ({filteredEvents}) => {
             selectedDay={selectedDay}
             filteredEvents={filteredEvents}
             />
-          {calendarRows[index].includes(selectedDay) && (
+          {(calendarRows[index].includes(selectedDay) && eventsForDay.length > 0) && (
             <HomeAwayBox/>
           )}
           {calendarRows[index].includes(selectedDay) && eventsForDay.map((event, index) => (
