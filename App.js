@@ -32,7 +32,13 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day, currentMonth, toggleEvents, isSelected,filteredEvents }) => {
+const Cell = ({ day, currentMonth, toggleEvents, isSelected, filteredEvents }) => {
+  let containsHome = false;
+  for(const event of filteredEvents) {
+    if(event.homeAway === 'Home') {
+      containsHome = true;
+    }
+  }
   return(
     <Pressable onPress={() => toggleEvents(day)}>
       {({ pressed }) => (
@@ -43,6 +49,9 @@ const Cell = ({ day, currentMonth, toggleEvents, isSelected,filteredEvents }) =>
           <View style={CellStyles.eventPosition}>
             {(filteredEvents.length > 0) && (!isSelected) && 
               <Text style={CellStyles.evt}>{filteredEvents.length} Events</Text>
+            }
+            {containsHome &&
+              <View style={CellStyles.HomeStyle}/>
             }
             {isSelected &&
             <View style={CellStyles.Xcontainer}>
@@ -157,11 +166,15 @@ const Calendar = ({filteredEvents}) => {
           {calendarRows[index].includes(selectedDay) && (
             <HomeAwayBox/>
           )}
-          {/*eventsForDay.length > 0*/calendarRows[index].includes(selectedDay) && eventsForDay.map((event, index) => (
+          {calendarRows[index].includes(selectedDay) && eventsForDay.map((event, index) => (
             <View key={index} style={CalendarStyles.EventDisplay}> 
+            {event.homeAway === 'Home' && 
+              <View style={CalendarStyles.homeStyle}/>
+            }
               <Text>{event.name}</Text>
               <Text>{event.time}</Text>
               <Text>{event.location}</Text>
+              <View style={CalendarStyles.bottomBar}/>
             </View>
           ))}
         </View>
@@ -351,6 +364,13 @@ const CellStyles = StyleSheet.create({
     borderRadius: 1,
     transform: [{ rotate: '-45deg' }],
   },
+  HomeStyle: {
+    width: 55,
+    height: 7.5,
+    backgroundColor: 'maroon',
+    position: 'absolute',
+    bottom: 0,
+  }
 });
 
 const CalendarRowStyles = StyleSheet.create({
@@ -378,7 +398,26 @@ const CalendarStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     marginBottom: 20,
-  }
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  homeStyle: {
+    height: 100,
+    width: 5,
+    backgroundColor: 'maroon',
+    alignSelf: 'flex-start',
+    position: 'absolute',
+    zIndex: 1,
+  },
+  bottomBar: {
+    width: 385,
+    height: 10,
+    borderBottomColor: 'white',
+    borderColor: 'lightgray',
+    borderWidth: 1,
+    position: 'absolute',
+    bottom: 0
+  },
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
@@ -438,7 +477,7 @@ const HomeAwayBoxStyles = StyleSheet.create({
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    width: 390,
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
