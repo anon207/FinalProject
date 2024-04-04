@@ -1,6 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-native';
 import { useState } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React from 'react';
 import SportsData from './SportsData.json';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
@@ -106,6 +109,14 @@ const HomeAwayBox = () => {
     </View>
   </View>
   );
+};
+
+const FavoriteList = ({ navigation }) => {
+return(
+  <Pressable style={FavoriteListStyles.favView} onPress={() => navigation.navigate('Favorited events')}>
+    <Text style={{color: 'white'}}>Favorites</Text>
+  </Pressable>
+);
 };
 
 const Calendar = ({filteredEvents}) => {
@@ -254,7 +265,16 @@ return (
   </View>
 );
 };
-export default function App() {
+
+const FavoritesScreen = ({ navigation }) => {
+return(
+  <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
+    <Text>Test</Text>
+  </ScrollView>
+);
+};
+
+const HomeScreen = ({ navigation }) => {
   const [selectedTeams,setSelectedTeams]=useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
 
@@ -269,13 +289,49 @@ export default function App() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <FavoriteList navigation={navigation}/>
       <Calendar filteredEvents={filteredEvents}/>
       <FilterButton applyFilter={applyFilter} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
-    </View>
+    </ScrollView>
   );
 }
+
+export default function App() {
+  const Stack = createStackNavigator();
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen} />
+        <Stack.Screen name="Favorited events" component={FavoritesScreen} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
+const FavoriteScreenStyles = StyleSheet.create({
+  defualtView: {
+    width: 390,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  }
+});
+
+const FavoriteListStyles = StyleSheet.create({
+  favView: {
+    height: 40,
+    width: 80,
+    backgroundColor: 'maroon',
+    marginBottom: 30,
+    borderWidth: 1,
+    borderRadius: 5,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginTop: 40,
+  },
+});
 
 const ChangeMonthStyles = StyleSheet.create({
   monthChange: {
@@ -481,6 +537,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 50,
+    //marginTop: 50,
+    marginBottom: 100,
   },
 });
