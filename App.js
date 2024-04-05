@@ -144,7 +144,6 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
     }
 
     setFilteredEvents(updatedEvents);
-    console.log(filteredEvents);
   };
 
   const daysInMonth = (month) => {
@@ -289,7 +288,11 @@ return (
 const FavoritesScreen = ({ navigation }) => {
 return(
   <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-    <Text>Test</Text>
+    {sportsData.map((event, index) => (
+      <View key={index}>
+
+      </View>
+    ))}
   </ScrollView>
 );
 };
