@@ -199,11 +199,11 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
                 <Text>{event.location}</Text>
                 <View style={CalendarStyles.bottomBar} />
                 <Pressable
-                  style={event.favorite ? CalendarStyles.Remove : CalendarStyles.favButton}
+                  style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
                   onPress={() => toggleFavorite(eventIndex)}
                 >
                   <Text style={{ color: 'white', fontSize: 10 }}>
-                    {event.favorite ? 'Unfavorite' : 'Favorite'}
+                    {event.favorite === false ? 'Unfavorite' : 'Favorite'}
                   </Text>
                 </Pressable>
               </View>
