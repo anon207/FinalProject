@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import SportsData from './SportsData.json';
+import SportsData from './SportsData.Json';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={ChangeMonthStyles.monthChange}>
