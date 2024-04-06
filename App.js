@@ -35,7 +35,7 @@ const Day = ({ day }) => (
   </View>
 );
 
-const Cell = ({ day, currentMonth, toggleEvents, isSelected, filteredEvents }) => {
+const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
   let containsHome = false;
   for(const event of filteredEvents) {
     if(event.homeAway === 'Home') {
@@ -214,7 +214,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
   );
 };
 
-const MakeFilterButton = ({onClose,applyFilter,selectedTeams,setSelectedTeams}) =>{
+const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
   const listSports = ["Baseball",
   "Men's Basketball",
   "Women's Basketball",
@@ -262,7 +262,7 @@ const MakeFilterButton = ({onClose,applyFilter,selectedTeams,setSelectedTeams}) 
     ))}
   </ScrollView>
   <View style={MakeFilterButtonStyles.buttonContainer}>
-    <Button title="Apply" onPress={applyFilter} />
+    <Button title="Apply" onPress={filterTeams} />
     <Button title="Close" onPress={onClose} />
   </View>
 </View>
@@ -270,7 +270,7 @@ const MakeFilterButton = ({onClose,applyFilter,selectedTeams,setSelectedTeams}) 
 };
 
 
-const FilterButton = ({applyFilter,selectedTeams,setSelectedTeams}) =>{
+const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
 const [showPopup,setShowPopup] = useState(false);
 
 const togglePopup = () => {
@@ -280,7 +280,10 @@ const togglePopup = () => {
 return (
   <View style={styles.container}>
     <Button title="Show List" onPress={togglePopup} />
-    {showPopup && <MakeFilterButton onClose={togglePopup}applyFilter={applyFilter} selectedTeams={selectedTeams}setSelectedTeams={setSelectedTeams} />}
+    {showPopup && <MakeFilterButton onClose={togglePopup}
+    filterTeams={filterTeams} 
+    selectedTeams={selectedTeams}
+    setSelectedTeams={setSelectedTeams} />}
   </View>
 );
 };
@@ -309,7 +312,7 @@ const HomeScreen = ({ navigation }) => {
     return filteredEvents;
 };
 
-  const applyFilter = () => {
+  const filterTeams = () => {
     const events = changeEvents(selectedTeams);
     setFilteredEvents(events);
   };
