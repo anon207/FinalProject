@@ -321,7 +321,7 @@ const HomeScreen = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <FavoriteList navigation={navigation}/>
       <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents}/>
-      <FilterButton applyFilter={applyFilter} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
+      <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </ScrollView>
   );
