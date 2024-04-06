@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import SportsData from './SportsData.Json';
+import SportsData from './SportsData.json';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={ChangeMonthStyles.monthChange}>
@@ -288,9 +288,12 @@ return (
 const FavoritesScreen = ({ navigation }) => {
 return(
   <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-    {sportsData.map((event, index) => (
-      <View key={index}>
-
+    {SportsData.map((event, index) => (
+      <View key={index} style={CalendarStyles.EventDisplay}>
+        <Text>{event.name}</Text>
+        <Text>{event.time}</Text>
+        <Text>{event.location}</Text>
+        <View style={CalendarStyles.bottomBar} />
       </View>
     ))}
   </ScrollView>
