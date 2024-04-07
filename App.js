@@ -136,18 +136,18 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
-  const toggleFavorite = (index) => {
-    const updatedEvents = [...filteredEvents];
-    updatedEvents[index].favorite = !updatedEvents[index].favorite;
+  const toggleFavorite = (event) => {
+    const updatedEvents = filteredEvents.map(e => e.Id === event.Id ? { ...e, favorite: !e.favorite } : e);
 
-    if (!updatedEvents[index].favorite) {
-      setFavorites(prevFavorites => [...prevFavorites, updatedEvents[index]]);
+    if (event.favorite) {
+        setFavorites(prevFavorites => [...prevFavorites, event]);
     } else {
-      setFavorites(prevFavorites => prevFavorites.filter(event => event !== updatedEvents[index]));
+        setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
     }
 
     setFilteredEvents(updatedEvents);
-  };
+};
+
   const daysInMonth = (month) => {
     if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
     if (['April', 'June', 'September', 'November'].includes(month)) return 30;
@@ -203,7 +203,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
                 <Pressable
                   key={event.Id}
                   style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
-                  onPress={() => toggleFavorite(event.Id)}
+                  onPress={() => toggleFavorite(event)}
                 >
                   <Text style={{ color: 'white', fontSize: 10 }}>
                     {event.favorite === false ? 'Unfavorite' : 'Favorite'}
@@ -597,7 +597,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    //marginTop: 50,
     marginBottom: 100,
   },
 });
