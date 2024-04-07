@@ -140,7 +140,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
     const updatedEvents = [...filteredEvents];
     updatedEvents[index].favorite = !updatedEvents[index].favorite;
 
-    if (updatedEvents[index].favorite) {
+    if (!updatedEvents[index].favorite) {
       setFavorites(prevFavorites => [...prevFavorites, updatedEvents[index]]);
     } else {
       setFavorites(prevFavorites => prevFavorites.filter(event => event !== updatedEvents[index]));
@@ -201,8 +201,9 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
                 <Text>{event.location}</Text>
                 <View style={CalendarStyles.bottomBar} />
                 <Pressable
+                  key={event.Id}
                   style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
-                  onPress={() => toggleFavorite(eventIndex)}
+                  onPress={() => toggleFavorite(event.Id)}
                 >
                   <Text style={{ color: 'white', fontSize: 10 }}>
                     {event.favorite === false ? 'Unfavorite' : 'Favorite'}
