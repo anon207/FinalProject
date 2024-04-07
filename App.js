@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect, React } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
 import SportsData from './SportsData.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={ChangeMonthStyles.monthChange}>
@@ -127,6 +127,34 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   const [currentMonth, setCurrentMonth] = useState(0);
   const [favorites, setFavorites] = useState([]);
 
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    saveData(favorites);
+  }, [favorites]);
+
+  const saveData = async (data) => {
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      const data = await AsyncStorage.getItem('favorites');
+      if (data !== null) {
+        setFavorites(JSON.parse(data));
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Alert.alert("Error saving data");
+    }
+  };
+
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
   const formattedDay = selectedDay < 10 ? `0${selectedDay}` : selectedDay;
@@ -136,7 +164,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
-  const toggleFavorite = (event) => {
+  const toggleFavorite = async (event) => {
     const updatedEvents = filteredEvents.map(e => e.Id === event.Id ? { ...e, favorite: !e.favorite } : e);
 
     if (event.favorite) {
@@ -311,6 +339,46 @@ return(
 const HomeScreen = ({ navigation, route }) => {
   const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  useEffect(() => {
+    saveEvents(filteredEvents);
+  }, [filteredEvents]);
+
+  const saveEvents = async (data) => {
+    try {
+      await AsyncStorage.setItem('filteredEvents', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  const loadEvents = async () => {
+    try {
+      const data = await AsyncStorage.getItem('filteredEvents');
+      if (data !== null) {
+        setFilteredEvents(JSON.parse(data));
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Alert.alert("Error saving data");
+    }
+  };
+
+  // const clearAsyncStorage = async () => {
+  //   try {
+  //     await AsyncStorage.clear();
+  //     console.log('AsyncStorage cleared successfully.');
+  //   } catch (error) {
+  //     console.error('Error clearing AsyncStorage:', error);
+  //   }
+  // };
+  
+  // // Call the function when needed
+  // clearAsyncStorage();
 
   const changeEvents = (selectedTeams) => {
     const filteredEvents = SportsData.filter(event => selectedTeams.includes(event.name));
