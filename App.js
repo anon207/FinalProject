@@ -111,15 +111,18 @@ const HomeAwayBox = () => {
   );
 };
 
-const FavoriteList = ({ navigation }) => {
+const FavoriteList = ({ navigation, favorites }) => {
 return(
-  <Pressable style={FavoriteListStyles.favView} onPress={() => navigation.navigate('Favorited events')}>
+  <Pressable 
+    style={FavoriteListStyles.favView} 
+    onPress={() => navigation.navigate('Favorited events', { favorites })}
+  >
     <Text style={{color: 'white'}}>Favorites</Text>
   </Pressable>
 );
 };
 
-const Calendar = ({ filteredEvents, setFilteredEvents }) => {
+const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
   const [favorites, setFavorites] = useState([]);
@@ -145,7 +148,6 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
 
     setFilteredEvents(updatedEvents);
   };
-
   const daysInMonth = (month) => {
     if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
     if (['April', 'June', 'September', 'November'].includes(month)) return 30;
@@ -168,6 +170,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
 
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
+      <FavoriteList navigation={navigation} favorites={favorites}/>
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
@@ -288,10 +291,11 @@ return (
 );
 };
 
-const FavoritesScreen = ({ navigation }) => {
+const FavoritesScreen = ({ route }) => {
+  const { favorites } = route.params;
 return(
   <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-    {SportsData.map((event, index) => (
+    {favorites.map((event, index) => (
       <View key={index} style={CalendarStyles.EventDisplay}>
         <Text>{event.name}</Text>
         <Text>{event.time}</Text>
@@ -303,8 +307,8 @@ return(
 );
 };
 
-const HomeScreen = ({ navigation }) => {
-  const [selectedTeams,setSelectedTeams]=useState([]);
+const HomeScreen = ({ navigation, route }) => {
+  const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
 
   const changeEvents = (selectedTeams) => {
@@ -319,8 +323,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <FavoriteList navigation={navigation}/>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents}/>
+      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} navigation={navigation}/>
       <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </ScrollView>
@@ -328,12 +331,14 @@ const HomeScreen = ({ navigation }) => {
 }
 
 export default function App() {
+  const [favorites, setFavorites] = useState([]);
   const Stack = createStackNavigator();
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen} />
-        <Stack.Screen name="Favorited events" component={FavoritesScreen} />
+        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen}/>
+        <Stack.Screen name="Favorited events" component={FavoritesScreen} initialParams={{favorites: favorites}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -476,6 +481,7 @@ const CalendarStyles = StyleSheet.create({
     flexDirection: 'column',
     flexWrap: 'wrap',
     paddingLeft: 2.5,
+    alignItems: 'center',
   },
   EventDisplay: {
     width: 385,
@@ -526,7 +532,7 @@ const CalendarStyles = StyleSheet.create({
     top: 5,
     borderWidth: 1,
     borderColor: 'maroon',
-  }
+  },
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
