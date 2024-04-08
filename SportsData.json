@@ -5,7 +5,8 @@
       "location": "Stadium",
       "homeAway": "Home",
       "date": "2024-04-01",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 0
     },
     {
       "name": "Men's Basketball",
@@ -13,7 +14,8 @@
       "location": "Arena",
       "homeAway": "Away",
       "date": "2024-04-01",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 1
     },
     {
       "name": "Women's Basketball",
@@ -21,14 +23,16 @@
       "location": "Gymnasium",
       "homeAway": "Home",
       "date": "2024-04-01",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 2
     },
     {
       "name": "Men's Cross Country",
       "time": "10:00",
       "location": "Park",
       "homeAway": "Away",
-      "date": "2024-04-04"
+      "date": "2024-04-04",
+      "Id": 3
     },
     {
       "name": "Women's Cross Country",
@@ -36,7 +40,8 @@
       "location": "Trail",
       "homeAway": "Home",
       "date": "2024-04-05",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 4
     },
     {
       "name": "Men's Track & Field",
@@ -44,7 +49,8 @@
       "location": "Field",
       "homeAway": "Away",
       "date": "2024-04-06",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 5
     },
     {
       "name": "Women's Track & Field",
@@ -52,7 +58,8 @@
       "location": "Stadium",
       "homeAway": "Home",
       "date": "2024-04-07",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 6
     },
     {
       "name": "Field Hockey",
@@ -60,7 +67,8 @@
       "location": "Field",
       "homeAway": "Home",
       "date": "2024-04-08",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 7
     },
     {
       "name": "Men's Soccer",
@@ -68,7 +76,8 @@
       "location": "Field",
       "homeAway": "Away",
       "date": "2024-04-09",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 8
     },
     {
       "name": "Women's Soccer",
@@ -76,7 +85,8 @@
       "location": "Field",
       "homeAway": "Home",
       "date": "2024-04-10",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 9
     },
     {
       "name": "Men's Volleyball",
@@ -84,7 +94,8 @@
       "location": "Arena",
       "homeAway": "Away",
       "date": "2024-04-11",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 10
     },
     {
       "name": "Women's Volleyball",
@@ -92,7 +103,8 @@
       "location": "Gymnasium",
       "homeAway": "Home",
       "date": "2024-04-12",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 11
     },
     {
       "name": "Softball",
@@ -100,7 +112,8 @@
       "location": "Field",
       "homeAway": "Away",
       "date": "2024-04-13",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 12
     },
     {
       "name": "Men's Lacrosse",
@@ -108,7 +121,8 @@
       "location": "Stadium",
       "homeAway": "Home",
       "date": "2024-04-14",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 13
     },
     {
       "name": "Women's Lacrosse",
@@ -116,7 +130,8 @@
       "location": "Field",
       "homeAway": "Away",
       "date": "2024-04-15",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 14
     },
     {
       "name": "Men's Tennis",
@@ -124,7 +139,8 @@
       "location": "Court",
       "homeAway": "Home",
       "date": "2024-04-16",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 15
     },
     {
       "name": "Women's Tennis",
@@ -132,7 +148,8 @@
       "location": "Court",
       "homeAway": "Away",
       "date": "2024-04-17",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 16
     },
     {
       "name": "Men's Golf",
@@ -140,7 +157,8 @@
       "location": "Course",
       "homeAway": "Home",
       "date": "2024-04-18",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 17
     },
     {
       "name": "Men's Swimming",
@@ -148,7 +166,8 @@
       "location": "Pool",
       "homeAway": "Away",
       "date": "2024-04-19",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 18
     },
     {
       "name": "Women's Swimming",
@@ -156,7 +175,8 @@
       "location": "Pool",
       "homeAway": "Home",
       "date": "2024-04-20",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 19
     },
     {
       "name": "Wrestling",
@@ -164,7 +184,8 @@
       "location": "Gymnasium",
       "homeAway": "Away",
       "date": "2024-04-21",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 20
     },
     {
       "name": "Cycling",
@@ -172,6 +193,7 @@
       "location": "Park",
       "homeAway": "Home",
       "date": "2024-04-22",
-      "favorite": "false"
+      "favorite": "false",
+      "Id": 21
     }
   ]

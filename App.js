@@ -1,10 +1,10 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-native';
-import { useState } from 'react';
+import { useState, useEffect, React } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React from 'react';
 import SportsData from './SportsData.json';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
   <View style={ChangeMonthStyles.monthChange}>
@@ -111,18 +111,49 @@ const HomeAwayBox = () => {
   );
 };
 
-const FavoriteList = ({ navigation }) => {
+const FavoriteList = ({ navigation, favorites }) => {
 return(
-  <Pressable style={FavoriteListStyles.favView} onPress={() => navigation.navigate('Favorited events')}>
+  <Pressable 
+    style={FavoriteListStyles.favView} 
+    onPress={() => navigation.navigate('Favorited events', { favorites })}
+  >
     <Text style={{color: 'white'}}>Favorites</Text>
   </Pressable>
 );
 };
 
-const Calendar = ({ filteredEvents, setFilteredEvents }) => {
+const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
   const [favorites, setFavorites] = useState([]);
+
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  useEffect(() => {
+    saveData(favorites);
+  }, [favorites]);
+
+  const saveData = async (data) => {
+    try {
+      await AsyncStorage.setItem('favorites', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  const loadData = async () => {
+    try {
+      const data = await AsyncStorage.getItem('favorites');
+      if (data !== null) {
+        setFavorites(JSON.parse(data));
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Alert.alert("Error saving data");
+    }
+  };
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
@@ -133,18 +164,17 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
-  const toggleFavorite = (index) => {
-    const updatedEvents = [...filteredEvents];
-    updatedEvents[index].favorite = !updatedEvents[index].favorite;
+  const toggleFavorite = async (event) => {
+    const updatedEvents = filteredEvents.map(e => e.Id === event.Id ? { ...e, favorite: !e.favorite } : e);
 
-    if (updatedEvents[index].favorite) {
-      setFavorites(prevFavorites => [...prevFavorites, updatedEvents[index]]);
+    if (event.favorite) {
+        setFavorites(prevFavorites => [...prevFavorites, event]);
     } else {
-      setFavorites(prevFavorites => prevFavorites.filter(event => event !== updatedEvents[index]));
+        setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
     }
 
     setFilteredEvents(updatedEvents);
-  };
+};
 
   const daysInMonth = (month) => {
     if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
@@ -168,6 +198,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
 
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
+      <FavoriteList navigation={navigation} favorites={favorites}/>
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
@@ -198,8 +229,9 @@ const Calendar = ({ filteredEvents, setFilteredEvents }) => {
                 <Text>{event.location}</Text>
                 <View style={CalendarStyles.bottomBar} />
                 <Pressable
+                  key={event.Id}
                   style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
-                  onPress={() => toggleFavorite(eventIndex)}
+                  onPress={() => toggleFavorite(event)}
                 >
                   <Text style={{ color: 'white', fontSize: 10 }}>
                     {event.favorite === false ? 'Unfavorite' : 'Favorite'}
@@ -288,10 +320,11 @@ return (
 );
 };
 
-const FavoritesScreen = ({ navigation }) => {
+const FavoritesScreen = ({ route }) => {
+  const { favorites } = route.params;
 return(
   <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-    {SportsData.map((event, index) => (
+    {favorites.map((event, index) => (
       <View key={index} style={CalendarStyles.EventDisplay}>
         <Text>{event.name}</Text>
         <Text>{event.time}</Text>
@@ -303,9 +336,49 @@ return(
 );
 };
 
-const HomeScreen = ({ navigation }) => {
-  const [selectedTeams,setSelectedTeams]=useState([]);
+const HomeScreen = ({ navigation, route }) => {
+  const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
+
+  useEffect(() => {
+    loadEvents();
+  }, []);
+
+  useEffect(() => {
+    saveEvents(filteredEvents);
+  }, [filteredEvents]);
+
+  const saveEvents = async (data) => {
+    try {
+      await AsyncStorage.setItem('filteredEvents', JSON.stringify(data));
+    } catch (error) {
+      console.error('Error saving data:', error);
+    }
+  };
+
+  const loadEvents = async () => {
+    try {
+      const data = await AsyncStorage.getItem('filteredEvents');
+      if (data !== null) {
+        setFilteredEvents(JSON.parse(data));
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+      // Alert.alert("Error saving data");
+    }
+  };
+
+  // const clearAsyncStorage = async () => {
+  //   try {
+  //     await AsyncStorage.clear();
+  //     console.log('AsyncStorage cleared successfully.');
+  //   } catch (error) {
+  //     console.error('Error clearing AsyncStorage:', error);
+  //   }
+  // };
+  
+  // // Call the function when needed
+  // clearAsyncStorage();
 
   const changeEvents = (selectedTeams) => {
     const filteredEvents = SportsData.filter(event => selectedTeams.includes(event.name));
@@ -319,8 +392,7 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <FavoriteList navigation={navigation}/>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents}/>
+      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} navigation={navigation}/>
       <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </ScrollView>
@@ -328,12 +400,14 @@ const HomeScreen = ({ navigation }) => {
 }
 
 export default function App() {
+  const [favorites, setFavorites] = useState([]);
   const Stack = createStackNavigator();
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen} />
-        <Stack.Screen name="Favorited events" component={FavoritesScreen} />
+        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen}/>
+        <Stack.Screen name="Favorited events" component={FavoritesScreen} initialParams={{favorites: favorites}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -476,6 +550,7 @@ const CalendarStyles = StyleSheet.create({
     flexDirection: 'column',
     flexWrap: 'wrap',
     paddingLeft: 2.5,
+    alignItems: 'center',
   },
   EventDisplay: {
     width: 385,
@@ -526,7 +601,7 @@ const CalendarStyles = StyleSheet.create({
     top: 5,
     borderWidth: 1,
     borderColor: 'maroon',
-  }
+  },
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
@@ -590,7 +665,6 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
-    //marginTop: 50,
     marginBottom: 100,
   },
 });
