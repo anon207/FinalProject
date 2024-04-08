@@ -111,6 +111,19 @@ const HomeAwayBox = () => {
   );
 };
 
+const HomeButton = ({filterHomeEvents,showHomeEventsOnly})=>{
+
+  const buttonText = showHomeEventsOnly ? "Show All" : "Home Events";
+
+  return(
+    <Pressable 
+  style={[HomeButtonStyles.homeButton,showHomeEventsOnly ? HomeButtonStyles.active : HomeButtonStyles.inactive]} 
+  onPress={filterHomeEvents}>
+  <Text style={HomeButtonStyles.homeButtontext}>{buttonText}</Text>
+</Pressable>
+  )
+}
+
 const FavoriteList = ({ navigation, favorites }) => {
 return(
   <Pressable 
@@ -126,6 +139,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
   const [favorites, setFavorites] = useState([]);
+  const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
 
   useEffect(() => {
     loadData();
@@ -161,6 +175,18 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   const fullDate = `2024-${formattedMonth}-${formattedDay}`;
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
+
+const filterHomeEvents = () => {
+  if (showHomeEventsOnly) {
+   
+    setFilteredEvents(SportsData);
+  } else {
+    
+    const homeEvents = SportsData.filter(event => event.homeAway === 'Home');
+    setFilteredEvents(homeEvents);
+  }
+  setShowHomeEventsOnly(prevState => !prevState);
+};
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
@@ -199,6 +225,7 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
       <FavoriteList navigation={navigation} favorites={favorites}/>
+      <HomeButton filterHomeEvents={filterHomeEvents} showHomeEventsOnly={showHomeEventsOnly} />
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
@@ -422,6 +449,33 @@ const FavoriteScreenStyles = StyleSheet.create({
   }
 });
 
+const HomeButtonStyles = StyleSheet.create({
+ 
+    homeButton: {
+      padding: 10,
+      borderRadius: 5,
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: 40,
+      width: 100,
+      backgroundColor: 'maroon',
+
+  },
+  homeButtontext: {
+    color: 'white',
+    fontSize: 13.2,
+    textAlign: 'center',
+  },
+  active: {
+    backgroundColor: 'grey',
+  },
+  inactive: {
+    backgroundColor: 'maroon',
+  },
+  
+});
+
+
 const FavoriteListStyles = StyleSheet.create({
   favView: {
     height: 40,
@@ -432,7 +486,7 @@ const FavoriteListStyles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40,
+    marginTop: 40, 
   },
 });
 
