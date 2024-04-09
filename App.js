@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-nati
 import { useState, useEffect, React } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+import {Dropdown} from 'react-native-element-dropdown';
 import SportsData from './SportsData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -111,18 +112,37 @@ const HomeAwayBox = () => {
   );
 };
 
-const HomeButton = ({filterHomeEvents,showHomeEventsOnly})=>{
+EventFilter=({applyFilter})=>{
+  const [value, setValue] = useState(null);
 
-  const buttonText = showHomeEventsOnly ? "Show All" : "Home Events";
+  const data = [
+    { label: 'All Games', value: 'all' },
+    { label: 'Home', value: 'home' },
+    { label: 'Away', value: 'away' },
+  ];
 
-  return(
-    <Pressable 
-  style={[HomeButtonStyles.homeButton,showHomeEventsOnly ? HomeButtonStyles.active : HomeButtonStyles.inactive]} 
-  onPress={filterHomeEvents}>
-  <Text style={HomeButtonStyles.homeButtontext}>{buttonText}</Text>
-</Pressable>
-  )
-}
+  return (
+    <View style={EventFilterStyles.dropdownContainer}>
+    <Dropdown
+      data={data}
+      labelField="label"
+      valueField="value"
+      placeholder="All Games"
+      value={value}
+      onChange={item => {
+        setValue(item.value);
+        applyFilter(item.value);
+      }}
+      style={EventFilterStyles.dropdown} 
+      placeholderStyle={EventFilterStyles.placeholderStyle}
+      selectedTextStyle={EventFilterStyles.selectedTextStyle}
+      iconStyle={EventFilterStyles.iconStyle}
+      containerStyle={EventFilterStyles.containerStyle}
+    />
+  </View>
+);
+};
+  
 
 const FavoriteList = ({ navigation, favorites }) => {
 return(
@@ -176,17 +196,16 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
 
-const filterHomeEvents = () => {
-  if (showHomeEventsOnly) {
-   
-    setFilteredEvents(SportsData);
-  } else {
-    
-    const homeEvents = SportsData.filter(event => event.homeAway === 'Home');
-    setFilteredEvents(homeEvents);
-  }
-  setShowHomeEventsOnly(prevState => !prevState);
-};
+  const applyFilter = (filterValue) => {
+    let events = SportsData; 
+
+    if (filterValue === 'home') {
+      events = SportsData.filter(event => event.homeAway === 'Home');
+    } else if (filterValue === 'away') {
+      events = SportsData.filter(event => event.homeAway === 'Away');
+    }
+    setFilteredEvents(events); 
+  };
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
@@ -224,8 +243,10 @@ const filterHomeEvents = () => {
 
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
+      <View style={CalendarStyles.headerContainer}>
+      <EventFilter applyFilter={applyFilter} />
       <FavoriteList navigation={navigation} favorites={favorites}/>
-      <HomeButton filterHomeEvents={filterHomeEvents} showHomeEventsOnly={showHomeEventsOnly} />
+      </View>
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
@@ -486,7 +507,7 @@ const FavoriteListStyles = StyleSheet.create({
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 40, 
+    marginTop: 20, 
   },
 });
 
@@ -656,10 +677,17 @@ const CalendarStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'maroon',
   },
+  headerContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%', 
+    paddingHorizontal: 50, 
+  },
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
-  popup: {
+popup: {
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
@@ -720,5 +748,33 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginBottom: 100,
+  },
+});
+const EventFilterStyles = StyleSheet.create({
+  dropdownContainer: {
+    paddingHorizontal: 12,
+    paddingVertical: 0,
+  },
+  dropdown: {
+    height: 50,
+    width: 120,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+  },
+  placeholderStyle: {
+    fontSize: 13,
+  },
+  selectedTextStyle: {
+    fontSize: 13,
+    color: 'grey',
+  },
+  iconStyle: {
+    width: 62,
+    height: 25,
+  },
+  containerStyle: {
+    marginBottom: 1,
   },
 });
