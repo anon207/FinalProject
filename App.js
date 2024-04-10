@@ -113,7 +113,7 @@ const HomeAwayBox = () => {
 };
 
 
-const EventFilter=({ applyFilter }) => {
+const EventFilter=({ setFilteredEvents }) => {
   const [value, setValue] = useState(null);
 
   const data = [
@@ -121,6 +121,17 @@ const EventFilter=({ applyFilter }) => {
     { label: 'Home', value: 'home' },
     { label: 'Away', value: 'away' },
   ];
+
+  const applyFilter = (filterValue) => {
+    let events = SportsData; 
+
+    if (filterValue === 'home') {
+      events = SportsData.filter(event => event.homeAway === 'Home');
+    } else if (filterValue === 'away') {
+      events = SportsData.filter(event => event.homeAway === 'Away');
+    }
+    setFilteredEvents(events); 
+  };
 
   return (
     <View style={EventFilterStyles.dropdownContainer}>
@@ -158,7 +169,6 @@ const FavoriteList = ({ navigation, favorites }) => {
 const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
-  const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
@@ -217,16 +227,14 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
 
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
-      <View style={CalendarStyles.headerContainer}>
-      <EventFilter applyFilter={applyFilter} />
-      <FavoriteList navigation={navigation} favorites={favorites}/>
-      </View>
-      <ChangeMonth
+      <HeaderChangeMonthDayRow
+        setFilteredEvents={setFilteredEvents}
+        navigation={navigation}
+        favorites={favorites}
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
         currMonth={months[currentMonth]}
       />
-      <DayRow />
       <RenderCalendarGridRowsAndEvents 
         renderCalendarRows={renderCalendarRows}
         currentMonth={currentMonth}
@@ -238,6 +246,33 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
         toggleFavorite={toggleFavorite}
       />
     </ScrollView>
+  );
+};
+
+const HeaderChangeMonthDayRow = ({ setFilteredEvents, navigation, favorites, onForward, onBackward, currMonth }) => {
+  return(
+    <>
+    <CalendarHeader 
+        setFilteredEvents={setFilteredEvents}
+        navigation={navigation}
+        favorites={favorites}
+      />
+      <ChangeMonth
+        onForward={onForward}
+        onBackward={onBackward}
+        currMonth={currMonth}
+      />
+      <DayRow />
+    </>
+  );
+};
+
+const CalendarHeader = ({ setFilteredEvents, navigation, favorites }) => {
+  return(
+    <View style={CalendarStyles.headerContainer}>
+        <EventFilter setFilteredEvents={setFilteredEvents}/>
+        <FavoriteList navigation={navigation} favorites={favorites}/>
+    </View>
   );
 };
 
@@ -403,7 +438,7 @@ const useAsyncStorage = (key, initialValue) => {
 
   return [storedValue, saveValue];
 };
-console
+
 const HomeScreen = ({ navigation, route }) => {
   const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
