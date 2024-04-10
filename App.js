@@ -135,39 +135,10 @@ return(
 );
 };
 
-const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
+const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation}) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
-  const [favorites, setFavorites] = useState([]);
   const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    saveData(favorites);
-  }, [favorites]);
-
-  const saveData = async (data) => {
-    try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(data));
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      const data = await AsyncStorage.getItem('favorites');
-      if (data !== null) {
-        setFavorites(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Alert.alert("Error saving data");
-    }
-  };
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
@@ -176,17 +147,17 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
 
-const filterHomeEvents = () => {
-  if (showHomeEventsOnly) {
-   
-    setFilteredEvents(SportsData);
-  } else {
+  const filterHomeEvents = () => {
+    if (showHomeEventsOnly) {
     
-    const homeEvents = SportsData.filter(event => event.homeAway === 'Home');
-    setFilteredEvents(homeEvents);
-  }
-  setShowHomeEventsOnly(prevState => !prevState);
-};
+      setFilteredEvents(SportsData);
+    } else {
+      
+      const homeEvents = SportsData.filter(event => event.homeAway === 'Home');
+      setFilteredEvents(homeEvents);
+    }
+    setShowHomeEventsOnly(prevState => !prevState);
+  };
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
@@ -221,7 +192,6 @@ const filterHomeEvents = () => {
       currentRow = [];
     }
   }
-
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
       <FavoriteList navigation={navigation} favorites={favorites}/>
@@ -257,11 +227,11 @@ const filterHomeEvents = () => {
                 <View style={CalendarStyles.bottomBar} />
                 <Pressable
                   key={event.Id}
-                  style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
+                  style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
                   onPress={() => toggleFavorite(event)}
                 >
                   <Text style={{ color: 'white', fontSize: 10 }}>
-                    {event.favorite === false ? 'Unfavorite' : 'Favorite'}
+                    {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
                   </Text>
                 </Pressable>
               </View>
@@ -274,28 +244,11 @@ const filterHomeEvents = () => {
 };
 
 const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
-  const listSports = ["Baseball",
-  "Men's Basketball",
-  "Women's Basketball",
-  "Men's Cross Country",
-  "Women's Cross Country",
-  "Men's Track & Field",
-  "Women's Track & Field",
-  "Field Hockey",
-  "Men's Soccer",
-  "Women's Soccer",
-  "Men's Volleyball",
-  "Women's Volleyball",
-  "Softball",
-  "Men's Lacrosse",
-  "Women's Lacrosse",
-  "Men's Tennis",
-  "Women's Tennis",
-  "Men's Golf",
-  "Men's Swimming",
-  "Women's Swimming",
-  "Wrestling",
-  "Cycling"];
+  const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
+  "Women's Cross Country", "Men's Track & Field", "Women's Track & Field", "Field Hockey",
+  "Men's Soccer", "Women's Soccer", "Men's Volleyball", "Women's Volleyball", "Softball", 
+  "Men's Lacrosse", "Women's Lacrosse", "Men's Tennis", "Women's Tennis", "Men's Golf", "Men's Swimming",
+  "Women's Swimming", "Wrestling", "Cycling"];
 
   const toggleTeamSelection = (team) => {
     if (!selectedTeams) {
@@ -363,53 +316,47 @@ return(
 );
 };
 
+const useAsyncStorage = (key, initialValue) => {
+  const [storedValue, setStoredValue] = useState(initialValue);
+
+  useEffect(() => {
+    const loadStoredValue = async () => {
+      try {
+        const data = await AsyncStorage.getItem(key);
+        if (data !== null) {
+          setStoredValue(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error(`Error loading ${key} from AsyncStorage:`, error);
+      }
+    };
+
+    loadStoredValue();
+  }, [key]);
+
+  const saveValue = async (value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+      setStoredValue(value);
+    } catch (error) {
+      console.error(`Error saving ${key} to AsyncStorage:`, error);
+    }
+  };
+
+  return [storedValue, saveValue];
+};
+console
 const HomeScreen = ({ navigation, route }) => {
   const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
+  const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    loadEvents();
-  }, []);
-
-  useEffect(() => {
-    saveEvents(filteredEvents);
-  }, [filteredEvents]);
-
-  const saveEvents = async (data) => {
-    try {
-      await AsyncStorage.setItem('filteredEvents', JSON.stringify(data));
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
-
-  const loadEvents = async () => {
-    try {
-      const data = await AsyncStorage.getItem('filteredEvents');
-      if (data !== null) {
-        setFilteredEvents(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Alert.alert("Error saving data");
-    }
-  };
-
-  // const clearAsyncStorage = async () => {
-  //   try {
-  //     await AsyncStorage.clear();
-  //     console.log('AsyncStorage cleared successfully.');
-  //   } catch (error) {
-  //     console.error('Error clearing AsyncStorage:', error);
-  //   }
-  // };
-  
-  // // Call the function when needed
-  // clearAsyncStorage();
+  useAsyncStorage('favorites', favorites);
+  useAsyncStorage('filteredEvents', filteredEvents);
 
   const changeEvents = (selectedTeams) => {
-    const filteredEvents = SportsData.filter(event => selectedTeams.includes(event.name));
-    return filteredEvents;
+    const changedEvents = SportsData.filter(event => selectedTeams.includes(event.name));
+    return changedEvents;
 };
 
   const filterTeams = () => {
@@ -419,7 +366,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} navigation={navigation}/>
+      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
       <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </ScrollView>
