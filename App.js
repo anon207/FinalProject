@@ -112,7 +112,8 @@ const HomeAwayBox = () => {
   );
 };
 
-EventFilter=({applyFilter})=>{
+
+const EventFilter=({ applyFilter }) => {
   const [value, setValue] = useState(null);
 
   const data = [
@@ -123,71 +124,41 @@ EventFilter=({applyFilter})=>{
 
   return (
     <View style={EventFilterStyles.dropdownContainer}>
-    <Dropdown
-      data={data}
-      labelField="label"
-      valueField="value"
-      placeholder="All Games"
-      value={value}
-      onChange={item => {
-        setValue(item.value);
-        applyFilter(item.value);
-      }}
-      style={EventFilterStyles.dropdown} 
-      placeholderStyle={EventFilterStyles.placeholderStyle}
-      selectedTextStyle={EventFilterStyles.selectedTextStyle}
-      iconStyle={EventFilterStyles.iconStyle}
-      containerStyle={EventFilterStyles.containerStyle}
-    />
-  </View>
-);
+      <Dropdown
+        data={data}
+        labelField="label"
+        valueField="value"
+        placeholder="All Games"
+        value={value}
+        onChange={item => {
+          setValue(item.value);
+          applyFilter(item.value);
+        }}
+        style={EventFilterStyles.dropdown} 
+        placeholderStyle={EventFilterStyles.placeholderStyle}
+        selectedTextStyle={EventFilterStyles.selectedTextStyle}
+        iconStyle={EventFilterStyles.iconStyle}
+        containerStyle={EventFilterStyles.containerStyle}
+      />
+    </View>
+  );
 };
-  
 
 const FavoriteList = ({ navigation, favorites }) => {
-return(
-  <Pressable 
-    style={FavoriteListStyles.favView} 
-    onPress={() => navigation.navigate('Favorited events', { favorites })}
-  >
-    <Text style={{color: 'white'}}>Favorites</Text>
-  </Pressable>
-);
+  return(
+    <Pressable 
+      style={FavoriteListStyles.favView} 
+      onPress={() => navigation.navigate('Favorited events', { favorites })}
+    >
+      <Text style={{color: 'white'}}>Favorites</Text>
+    </Pressable>
+  );
 };
 
-const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
+const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
-  const [favorites, setFavorites] = useState([]);
   const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
-
-  useEffect(() => {
-    loadData();
-  }, []);
-
-  useEffect(() => {
-    saveData(favorites);
-  }, [favorites]);
-
-  const saveData = async (data) => {
-    try {
-      await AsyncStorage.setItem('favorites', JSON.stringify(data));
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
-
-  const loadData = async () => {
-    try {
-      const data = await AsyncStorage.getItem('favorites');
-      if (data !== null) {
-        setFavorites(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Alert.alert("Error saving data");
-    }
-  };
 
   const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
@@ -219,27 +190,30 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
     }
 
     setFilteredEvents(updatedEvents);
-};
-
-  const daysInMonth = (month) => {
-    if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
-    if (['April', 'June', 'September', 'November'].includes(month)) return 30;
-    return month === 'February' ? 29 : 0;
   };
 
   const changeMonth = (increment) => {
     setCurrentMonth((prevMonth) => (prevMonth + increment + 12) % 12);
   };
 
-  const calendarRows = [];
-  let currentRow = [];
-  for (let i = 1; i <= daysInMonth(months[currentMonth]); i++) {
-    currentRow.push(i);
-    if (currentRow.length === 7 || i === daysInMonth(months[currentMonth])) {
-      calendarRows.push([...currentRow]);
-      currentRow = [];
+  const renderCalendarRows = () => {
+    const calendarRows = [];
+    let currentRow = [];
+    for (let i = 1; i <= daysInMonth(months[currentMonth]); i++) {
+      currentRow.push(i);
+      if (currentRow.length === 7 || i === daysInMonth(months[currentMonth])) {
+        calendarRows.push([...currentRow]);
+        currentRow = [];
+      }
     }
-  }
+    return calendarRows;
+  };
+
+  const daysInMonth = (month) => {
+    if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
+    if (['April', 'June', 'September', 'November'].includes(month)) return 30;
+    return month === 'February' ? 29 : 0;
+  };
 
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
@@ -253,8 +227,24 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
         currMonth={months[currentMonth]}
       />
       <DayRow />
-      <View style={CalendarStyles.calendarGrid}>
-        {calendarRows.map((days, index) => (
+      <RenderCalendarGridRowsAndEvents 
+        renderCalendarRows={renderCalendarRows}
+        currentMonth={currentMonth}
+        toggleEvents={toggleEvents}
+        selectedDay={selectedDay}
+        filteredEvents={filteredEvents}
+        eventsForDay={eventsForDay}
+        favorites={favorites}
+        toggleFavorite={toggleFavorite}
+      />
+    </ScrollView>
+  );
+};
+
+const RenderCalendarGridRowsAndEvents = ({ renderCalendarRows, currentMonth, toggleEvents, selectedDay, filteredEvents, eventsForDay, favorites, toggleFavorite }) => {
+  return( 
+    <View style={CalendarStyles.calendarGrid}>
+        {renderCalendarRows().map((days, index) => (
           <View key={index}>
             <CalendarRow
               key={index}
@@ -264,59 +254,59 @@ const Calendar = ({ filteredEvents, setFilteredEvents, navigation}) => {
               selectedDay={selectedDay}
               filteredEvents={filteredEvents}
             />
-            {calendarRows[index].includes(selectedDay) && eventsForDay.length > 0 && (
-              <HomeAwayBox />
-            )}
-            {calendarRows[index].includes(selectedDay) && eventsForDay.map((event, eventIndex) => (
-              <View key={eventIndex} style={CalendarStyles.EventDisplay}>
-                {event.homeAway === 'Home' &&
-                  <View style={CalendarStyles.homeStyle} />
-                }
-                <Text>{event.name}</Text>
-                <Text>{event.time}</Text>
-                <Text>{event.location}</Text>
-                <View style={CalendarStyles.bottomBar} />
-                <Pressable
-                  key={event.Id}
-                  style={event.favorite === false ? CalendarStyles.Remove : CalendarStyles.favButton}
-                  onPress={() => toggleFavorite(event)}
-                >
-                  <Text style={{ color: 'white', fontSize: 10 }}>
-                    {event.favorite === false ? 'Unfavorite' : 'Favorite'}
-                  </Text>
-                </Pressable>
-              </View>
-            ))}
+            <RenderHomeAwayBoxAndEvents 
+              days={days} 
+              selectedDay={selectedDay} 
+              eventsForDay={eventsForDay} 
+              favorites={favorites} 
+              toggleFavorite={toggleFavorite}
+            />
           </View>
         ))}
       </View>
-    </ScrollView>
   );
 };
 
+const RenderHomeAwayBoxAndEvents = ({days, selectedDay, eventsForDay, favorites, toggleFavorite}) => {
+  return(
+    days.includes(selectedDay) && (
+      <>
+        <HomeAwayBox />
+        {renderEventsForDay(eventsForDay, favorites, toggleFavorite)}
+      </>
+    )
+  );
+}
+
+const renderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
+  return eventsForDay.map((event, eventIndex) => (
+    <View key={eventIndex} style={CalendarStyles.EventDisplay}>
+      {event.homeAway === 'Home' &&
+        <View style={CalendarStyles.homeStyle} />
+      }
+      <Text>{event.name}</Text>
+      <Text>{event.time}</Text>
+      <Text>{event.location}</Text>
+      <View style={CalendarStyles.bottomBar} />
+      <Pressable
+        key={event.Id}
+        style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
+        onPress={() => toggleFavorite(event)}
+      >
+        <Text style={{ color: 'white', fontSize: 10 }}>
+          {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
+        </Text>
+      </Pressable>
+    </View>
+  ));
+};
+
 const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
-  const listSports = ["Baseball",
-  "Men's Basketball",
-  "Women's Basketball",
-  "Men's Cross Country",
-  "Women's Cross Country",
-  "Men's Track & Field",
-  "Women's Track & Field",
-  "Field Hockey",
-  "Men's Soccer",
-  "Women's Soccer",
-  "Men's Volleyball",
-  "Women's Volleyball",
-  "Softball",
-  "Men's Lacrosse",
-  "Women's Lacrosse",
-  "Men's Tennis",
-  "Women's Tennis",
-  "Men's Golf",
-  "Men's Swimming",
-  "Women's Swimming",
-  "Wrestling",
-  "Cycling"];
+  const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
+  "Women's Cross Country", "Men's Track & Field", "Women's Track & Field", "Field Hockey",
+  "Men's Soccer", "Women's Soccer", "Men's Volleyball", "Women's Volleyball", "Softball", 
+  "Men's Lacrosse", "Women's Lacrosse", "Men's Tennis", "Women's Tennis", "Men's Golf", "Men's Swimming",
+  "Women's Swimming", "Wrestling", "Cycling"];
 
   const toggleTeamSelection = (team) => {
     if (!selectedTeams) {
@@ -384,53 +374,47 @@ return(
 );
 };
 
+const useAsyncStorage = (key, initialValue) => {
+  const [storedValue, setStoredValue] = useState(initialValue);
+
+  useEffect(() => {
+    const loadStoredValue = async () => {
+      try {
+        const data = await AsyncStorage.getItem(key);
+        if (data !== null) {
+          setStoredValue(JSON.parse(data));
+        }
+      } catch (error) {
+        console.error(`Error loading ${key} from AsyncStorage:`, error);
+      }
+    };
+
+    loadStoredValue();
+  }, [key]);
+
+  const saveValue = async (value) => {
+    try {
+      await AsyncStorage.setItem(key, JSON.stringify(value));
+      setStoredValue(value);
+    } catch (error) {
+      console.error(`Error saving ${key} to AsyncStorage:`, error);
+    }
+  };
+
+  return [storedValue, saveValue];
+};
+console
 const HomeScreen = ({ navigation, route }) => {
   const [selectedTeams,setSelectedTeams] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
+  const [favorites, setFavorites] = useState([]);
 
-  useEffect(() => {
-    loadEvents();
-  }, []);
-
-  useEffect(() => {
-    saveEvents(filteredEvents);
-  }, [filteredEvents]);
-
-  const saveEvents = async (data) => {
-    try {
-      await AsyncStorage.setItem('filteredEvents', JSON.stringify(data));
-    } catch (error) {
-      console.error('Error saving data:', error);
-    }
-  };
-
-  const loadEvents = async () => {
-    try {
-      const data = await AsyncStorage.getItem('filteredEvents');
-      if (data !== null) {
-        setFilteredEvents(JSON.parse(data));
-      }
-    } catch (error) {
-      console.error('Error loading data:', error);
-      // Alert.alert("Error saving data");
-    }
-  };
-
-  // const clearAsyncStorage = async () => {
-  //   try {
-  //     await AsyncStorage.clear();
-  //     console.log('AsyncStorage cleared successfully.');
-  //   } catch (error) {
-  //     console.error('Error clearing AsyncStorage:', error);
-  //   }
-  // };
-  
-  // // Call the function when needed
-  // clearAsyncStorage();
+  useAsyncStorage('favorites', favorites);
+  useAsyncStorage('filteredEvents', filteredEvents);
 
   const changeEvents = (selectedTeams) => {
-    const filteredEvents = SportsData.filter(event => selectedTeams.includes(event.name));
-    return filteredEvents;
+    const changedEvents = SportsData.filter(event => selectedTeams.includes(event.name));
+    return changedEvents;
 };
 
   const filterTeams = () => {
@@ -440,7 +424,7 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} navigation={navigation}/>
+      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
       <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
       <StatusBar style="auto" />
     </ScrollView>
