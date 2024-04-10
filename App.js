@@ -111,41 +111,9 @@ const HomeAwayBox = () => {
   );
 };
 
-const HomeButton = ({filterHomeEvents,showHomeEventsOnly})=>{
+const HomeButton = ({ setShowHomeEventsOnly, showHomeEventsOnly, setFilteredEvents }) => {
 
   const buttonText = showHomeEventsOnly ? "Show All" : "Home Events";
-
-  return(
-    <Pressable 
-  style={[HomeButtonStyles.homeButton,showHomeEventsOnly ? HomeButtonStyles.active : HomeButtonStyles.inactive]} 
-  onPress={filterHomeEvents}>
-  <Text style={HomeButtonStyles.homeButtontext}>{buttonText}</Text>
-</Pressable>
-  )
-}
-
-const FavoriteList = ({ navigation, favorites }) => {
-return(
-  <Pressable 
-    style={FavoriteListStyles.favView} 
-    onPress={() => navigation.navigate('Favorited events', { favorites })}
-  >
-    <Text style={{color: 'white'}}>Favorites</Text>
-  </Pressable>
-);
-};
-
-const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation}) => {
-  const [selectedDay, setSelectedDay] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(0);
-  const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
-
-  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
-  const formattedDay = selectedDay < 10 ? `0${selectedDay}` : selectedDay;
-  const fullDate = `2024-${formattedMonth}-${formattedDay}`;
-
-  const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
 
   const filterHomeEvents = () => {
     if (showHomeEventsOnly) {
@@ -159,6 +127,38 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
     setShowHomeEventsOnly(prevState => !prevState);
   };
 
+  return(
+    <Pressable 
+      style={[HomeButtonStyles.homeButton, showHomeEventsOnly ? HomeButtonStyles.active : HomeButtonStyles.inactive]} 
+      onPress={filterHomeEvents}>
+      <Text style={HomeButtonStyles.homeButtontext}>{buttonText}</Text>
+    </Pressable>
+  );
+};
+
+const FavoriteList = ({ navigation, favorites }) => {
+return(
+  <Pressable 
+    style={FavoriteListStyles.favView} 
+    onPress={() => navigation.navigate('Favorited events', { favorites })}
+  >
+    <Text style={{color: 'white'}}>Favorites</Text>
+  </Pressable>
+);
+};
+
+const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
+  const [selectedDay, setSelectedDay] = useState(null);
+  const [currentMonth, setCurrentMonth] = useState(0);
+  const [showHomeEventsOnly, setShowHomeEventsOnly] = useState(false);
+
+  const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  const formattedMonth = currentMonth + 1 < 10 ? `0${currentMonth + 1}` : `${currentMonth + 1}`;
+  const formattedDay = selectedDay < 10 ? `0${selectedDay}` : selectedDay;
+  const fullDate = `2024-${formattedMonth}-${formattedDay}`;
+
+  const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
+
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
   const toggleFavorite = async (event) => {
@@ -171,7 +171,24 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
     }
 
     setFilteredEvents(updatedEvents);
-};
+  };
+
+  const changeMonth = (increment) => {
+    setCurrentMonth((prevMonth) => (prevMonth + increment + 12) % 12);
+  };
+
+  const renderCalendarRows = () => {
+    const calendarRows = [];
+    let currentRow = [];
+    for (let i = 1; i <= daysInMonth(months[currentMonth]); i++) {
+      currentRow.push(i);
+      if (currentRow.length === 7 || i === daysInMonth(months[currentMonth])) {
+        calendarRows.push([...currentRow]);
+        currentRow = [];
+      }
+    }
+    return calendarRows;
+  };
 
   const daysInMonth = (month) => {
     if (['January', 'March', 'May', 'July', 'August', 'October', 'December'].includes(month)) return 31;
@@ -179,31 +196,38 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
     return month === 'February' ? 29 : 0;
   };
 
-  const changeMonth = (increment) => {
-    setCurrentMonth((prevMonth) => (prevMonth + increment + 12) % 12);
-  };
-
-  const calendarRows = [];
-  let currentRow = [];
-  for (let i = 1; i <= daysInMonth(months[currentMonth]); i++) {
-    currentRow.push(i);
-    if (currentRow.length === 7 || i === daysInMonth(months[currentMonth])) {
-      calendarRows.push([...currentRow]);
-      currentRow = [];
-    }
-  }
   return (
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
       <FavoriteList navigation={navigation} favorites={favorites}/>
-      <HomeButton filterHomeEvents={filterHomeEvents} showHomeEventsOnly={showHomeEventsOnly} />
+      <HomeButton 
+        setShowHomeEventsOnly={setShowHomeEventsOnly} 
+        showHomeEventsOnly={showHomeEventsOnly} 
+        setFilteredEvents={setFilteredEvents} 
+      />
       <ChangeMonth
         onForward={() => changeMonth(1)}
         onBackward={() => changeMonth(-1)}
         currMonth={months[currentMonth]}
       />
       <DayRow />
-      <View style={CalendarStyles.calendarGrid}>
-        {calendarRows.map((days, index) => (
+      <RenderCalendarGridRowsAndEvents 
+        renderCalendarRows={renderCalendarRows}
+        currentMonth={currentMonth}
+        toggleEvents={toggleEvents}
+        selectedDay={selectedDay}
+        filteredEvents={filteredEvents}
+        eventsForDay={eventsForDay}
+        favorites={favorites}
+        toggleFavorite={toggleFavorite}
+      />
+    </ScrollView>
+  );
+};
+
+const RenderCalendarGridRowsAndEvents = ({ renderCalendarRows, currentMonth, toggleEvents, selectedDay, filteredEvents, eventsForDay, favorites, toggleFavorite }) => {
+  return( 
+    <View style={CalendarStyles.calendarGrid}>
+        {renderCalendarRows().map((days, index) => (
           <View key={index}>
             <CalendarRow
               key={index}
@@ -213,34 +237,51 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
               selectedDay={selectedDay}
               filteredEvents={filteredEvents}
             />
-            {calendarRows[index].includes(selectedDay) && eventsForDay.length > 0 && (
-              <HomeAwayBox />
-            )}
-            {calendarRows[index].includes(selectedDay) && eventsForDay.map((event, eventIndex) => (
-              <View key={eventIndex} style={CalendarStyles.EventDisplay}>
-                {event.homeAway === 'Home' &&
-                  <View style={CalendarStyles.homeStyle} />
-                }
-                <Text>{event.name}</Text>
-                <Text>{event.time}</Text>
-                <Text>{event.location}</Text>
-                <View style={CalendarStyles.bottomBar} />
-                <Pressable
-                  key={event.Id}
-                  style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
-                  onPress={() => toggleFavorite(event)}
-                >
-                  <Text style={{ color: 'white', fontSize: 10 }}>
-                    {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
-                  </Text>
-                </Pressable>
-              </View>
-            ))}
+            <RenderHomeAwayBoxAndEvents 
+              days={days} 
+              selectedDay={selectedDay} 
+              eventsForDay={eventsForDay} 
+              favorites={favorites} 
+              toggleFavorite={toggleFavorite}
+            />
           </View>
         ))}
       </View>
-    </ScrollView>
   );
+};
+
+const RenderHomeAwayBoxAndEvents = ({days, selectedDay, eventsForDay, favorites, toggleFavorite}) => {
+  return(
+    days.includes(selectedDay) && (
+      <>
+        <HomeAwayBox />
+        {renderEventsForDay(eventsForDay, favorites, toggleFavorite)}
+      </>
+    )
+  );
+}
+
+const renderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
+  return eventsForDay.map((event, eventIndex) => (
+    <View key={eventIndex} style={CalendarStyles.EventDisplay}>
+      {event.homeAway === 'Home' &&
+        <View style={CalendarStyles.homeStyle} />
+      }
+      <Text>{event.name}</Text>
+      <Text>{event.time}</Text>
+      <Text>{event.location}</Text>
+      <View style={CalendarStyles.bottomBar} />
+      <Pressable
+        key={event.Id}
+        style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
+        onPress={() => toggleFavorite(event)}
+      >
+        <Text style={{ color: 'white', fontSize: 10 }}>
+          {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
+        </Text>
+      </Pressable>
+    </View>
+  ));
 };
 
 const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
