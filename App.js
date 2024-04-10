@@ -177,6 +177,17 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
 
+  const applyFilter = (filterValue) => {
+    let events = SportsData; 
+
+    if (filterValue === 'home') {
+      events = SportsData.filter(event => event.homeAway === 'Home');
+    } else if (filterValue === 'away') {
+      events = SportsData.filter(event => event.homeAway === 'Away');
+    }
+    setFilteredEvents(events); 
+  };
+
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
   const toggleFavorite = async (event) => {
