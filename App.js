@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, Button, Image } from 'react-native';
 import { useState, useEffect, React } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
@@ -7,6 +7,7 @@ import {Dropdown} from 'react-native-element-dropdown';
 import SportsData from './SportsData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
+import { SvgUri } from 'react-native-svg';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => {
  return(
@@ -484,6 +485,13 @@ export default function App() {
 }
 
 const navigationStyles = StyleSheet.create({
+    headerRight: () => (
+      <Image
+        source={require('./assets/Icons/maroon.png')} // Specify the path to your other image file
+        style={{ width: 30, height: 30, marginLeft: 10 }} // Specify the desired width, height, and margin
+        resizeMode="contain" // Adjust the resizeMode as needed
+      />
+    ),
     headerStyle: {
       backgroundColor: 'maroon', // Specify your desired background color
     },
