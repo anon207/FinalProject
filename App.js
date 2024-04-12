@@ -1,23 +1,27 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, ScrollView, Pressable,Button } from 'react-native';
+import { StyleSheet, Text, View, ScrollView, Pressable, Button, Image } from 'react-native';
 import { useState, useEffect, React } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import {Dropdown} from 'react-native-element-dropdown';
 import SportsData from './SportsData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFonts } from 'expo-font';
+import { SvgUri } from 'react-native-svg';
 
-const ChangeMonth = ({ currMonth, onForward, onBackward }) => (
-  <View style={ChangeMonthStyles.monthChange}>
-    <Pressable onPress={onBackward}>
-      <Text style={{ fontSize: 30 }}>{'<< '}</Text>
-    </Pressable>
-    <Text style={{ fontSize: 30 }}> {currMonth} </Text>
-    <Pressable onPress={onForward}>
-      <Text style={{ fontSize: 30 }}>{' >>'}</Text>
-    </Pressable>
-  </View>
-);
+const ChangeMonth = ({ currMonth, onForward, onBackward }) => {
+ return(
+    <View style={ChangeMonthStyles.monthChange}>
+      <Pressable onPress={onBackward}>
+        <Text style={{ fontSize: 30, fontFamily: 'RobotoCondensed-Regular' }}>{'<< '}</Text>
+      </Pressable>
+      <Text style={{ fontSize: 30, fontFamily: 'RobotoCondensed-Regular' }}> {currMonth} </Text>
+      <Pressable onPress={onForward}>
+        <Text style={{ fontSize: 30, fontFamily: 'RobotoCondensed-Regular' }}>{' >>'}</Text>
+      </Pressable>
+    </View>
+  );
+};
 
 const DayRow = () => {
   const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -30,11 +34,13 @@ const DayRow = () => {
   );
 };
 
-const Day = ({ day }) => (
-  <View style={DayStyles.day}>
-    <Text style={DayStyles.dayFont}>{day}</Text>
-  </View>
-);
+const Day = ({ day }) => {
+  return(
+    <View style={DayStyles.day}>
+      <Text style={DayStyles.dayFont}>{day}</Text>
+    </View>
+  );
+};
 
 const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
   let containsHome = false;
@@ -54,7 +60,7 @@ const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
             {(filteredEvents.length > 0) && (!isSelected) && 
               <Text style={CellStyles.evt}>{filteredEvents.length} Events</Text>
             }
-            {containsHome &&
+            {(containsHome && !isSelected) &&
               <View style={CellStyles.HomeStyle}/>
             }
             {(isSelected && filteredEvents.length > 0) &&
@@ -134,7 +140,7 @@ const EventFilter=({ setFilteredEvents }) => {
   };
 
   return (
-    <View style={EventFilterStyles.dropdownContainer}>
+    <View>
       <Dropdown
         data={data}
         labelField="label"
@@ -161,7 +167,7 @@ const FavoriteList = ({ navigation, favorites }) => {
       style={FavoriteListStyles.favView} 
       onPress={() => navigation.navigate('Favorited events', { favorites })}
     >
-      <Text style={{color: 'white'}}>Favorites</Text>
+      <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Favorites</Text>
     </Pressable>
   );
 };
@@ -176,17 +182,6 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
   const fullDate = `2024-${formattedMonth}-${formattedDay}`;
 
   const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
-
-  const applyFilter = (filterValue) => {
-    let events = SportsData; 
-
-    if (filterValue === 'home') {
-      events = SportsData.filter(event => event.homeAway === 'Home');
-    } else if (filterValue === 'away') {
-      events = SportsData.filter(event => event.homeAway === 'Away');
-    }
-    setFilteredEvents(events); 
-  };
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
@@ -319,16 +314,16 @@ const renderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
       {event.homeAway === 'Home' &&
         <View style={CalendarStyles.homeStyle} />
       }
-      <Text>{event.name}</Text>
-      <Text>{event.time}</Text>
-      <Text>{event.location}</Text>
+      <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
+      <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
+      <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.location}</Text>
       <View style={CalendarStyles.bottomBar} />
       <Pressable
         key={event.Id}
         style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
         onPress={() => toggleFavorite(event)}
       >
-        <Text style={{ color: 'white', fontSize: 10 }}>
+        <Text style={{ color: 'white', fontSize: 10, fontFamily: 'RobotoCondensed-Regular' }}>
           {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
         </Text>
       </Pressable>
@@ -395,18 +390,18 @@ return (
 
 const FavoritesScreen = ({ route }) => {
   const { favorites } = route.params;
-return(
-  <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-    {favorites.map((event, index) => (
-      <View key={index} style={CalendarStyles.EventDisplay}>
-        <Text>{event.name}</Text>
-        <Text>{event.time}</Text>
-        <Text>{event.location}</Text>
-        <View style={CalendarStyles.bottomBar} />
-      </View>
-    ))}
-  </ScrollView>
-);
+  return(
+    <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
+      {favorites.map((event, index) => (
+        <View key={index} style={[CalendarStyles.EventDisplay, (index === 0) && CalendarStyles.firstEvent]}>
+          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
+          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
+          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.location}</Text>
+          <View style={CalendarStyles.bottomBar} />
+        </View>
+      ))}
+    </ScrollView>
+  );
 };
 
 const useAsyncStorage = (key, initialValue) => {
@@ -468,17 +463,44 @@ const HomeScreen = ({ navigation, route }) => {
 
 export default function App() {
   const [favorites, setFavorites] = useState([]);
+  const [fontsLoaded] = useFonts({
+    'RobotoCondensed-Bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
+    'RobotoCondensed-Regular': require('./assets/fonts/RobotoCondensed-Regular.ttf')
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const Stack = createStackNavigator();
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen}/>
+      <Stack.Navigator screenOptions={navigationStyles}>
+        <Stack.Screen name="Composite Calendar" component={HomeScreen}/>
         <Stack.Screen name="Favorited events" component={FavoritesScreen} initialParams={{favorites: favorites}}/>
       </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+const navigationStyles = StyleSheet.create({
+    headerRight: () => (
+      <Image
+        source={require('./assets/Icons/maroon.png')}
+        style={{ width: 75, height: 75, marginRight: 10, marginTop: 8, }}
+        resizeMode="contain"
+      />
+    ),
+    headerStyle: {
+      backgroundColor: 'maroon',
+    },
+    headerTintColor: '#fff', 
+    headerTitleStyle: {
+      marginBottom: 15,
+      fontFamily: 'RobotoCondensed-Bold', 
+    },
+});
 
 const FavoriteScreenStyles = StyleSheet.create({
   defualtView: {
@@ -521,12 +543,10 @@ const FavoriteListStyles = StyleSheet.create({
     height: 40,
     width: 80,
     backgroundColor: 'maroon',
-    marginBottom: 30,
     borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop: 20, 
   },
 });
 
@@ -542,8 +562,8 @@ const ChangeMonthStyles = StyleSheet.create({
 const DayRowStyles = StyleSheet.create({
   daysRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    paddingVertical: 10,
+    justifyContent: 'flex-start',
+    marginVertical: 10,
   },
 });
 
@@ -554,7 +574,7 @@ const DayStyles = StyleSheet.create({
     paddingVertical: 10,
   },
   dayFont: {
-    //fontFamily: 'RobotoCondensed-Bold',
+    fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 18, 
     color: '#666666'
@@ -581,7 +601,7 @@ const CellStyles = StyleSheet.create({
     paddingTop: 15,
   },
   dayText: {
-    //fontFamily: 'RobotoCondensed-Bold',
+    fontFamily: 'RobotoCondensed-Bold',
     fontWeight: 'bold',
     fontSize: 18,
   },
@@ -590,7 +610,7 @@ const CellStyles = StyleSheet.create({
     paddingBottom: 15,
   },
   evt: {
-    //fontFamily: 'RobotoCondensed-Bold',
+    fontFamily: 'RobotoCondensed-Regular',
     fontWeight: 'bold',
     fontSize: 10,
     color: '#666666'
@@ -655,6 +675,15 @@ const CalendarStyles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  firstEvent: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    marginBottom: 20,
+    marginTop: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   homeStyle: {
     height: 100,
     width: 5,
@@ -698,10 +727,10 @@ const CalendarStyles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
     alignItems: 'center',
     width: '100%', 
-    paddingHorizontal: 50, 
+    marginVertical: 25,
   },
 });
 
@@ -769,14 +798,11 @@ const styles = StyleSheet.create({
     marginBottom: 100,
   },
 });
+
 const EventFilterStyles = StyleSheet.create({
-  dropdownContainer: {
-    paddingHorizontal: 12,
-    paddingVertical: 0,
-  },
   dropdown: {
-    height: 50,
-    width: 120,
+    height: 40,
+    width: 90,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 8,
@@ -784,14 +810,16 @@ const EventFilterStyles = StyleSheet.create({
   },
   placeholderStyle: {
     fontSize: 13,
+    fontFamily: 'RobotoCondensed-Regular',
   },
   selectedTextStyle: {
     fontSize: 13,
-    color: 'grey',
+    color: 'black',
+    fontFamily: 'RobotoCondensed-Regular'
   },
   iconStyle: {
-    width: 62,
-    height: 25,
+    width: 25,
+    height: 45,
   },
   containerStyle: {
     marginBottom: 1,
