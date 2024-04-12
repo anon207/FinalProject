@@ -393,7 +393,7 @@ const FavoritesScreen = ({ route }) => {
   return(
     <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
       {favorites.map((event, index) => (
-        <View key={index} style={CalendarStyles.EventDisplay}>
+        <View key={index} style={[CalendarStyles.EventDisplay, (index === 0) && CalendarStyles.firstEvent]}>
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.location}</Text>
@@ -477,7 +477,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator screenOptions={navigationStyles}>
-        <Stack.Screen name="Roanoke Composite Calendar" component={HomeScreen}/>
+        <Stack.Screen name="Composite Calendar" component={HomeScreen}/>
         <Stack.Screen name="Favorited events" component={FavoritesScreen} initialParams={{favorites: favorites}}/>
       </Stack.Navigator>
     </NavigationContainer>
@@ -487,17 +487,18 @@ export default function App() {
 const navigationStyles = StyleSheet.create({
     headerRight: () => (
       <Image
-        source={require('./assets/Icons/maroon.png')} // Specify the path to your other image file
-        style={{ width: 30, height: 30, marginLeft: 10 }} // Specify the desired width, height, and margin
-        resizeMode="contain" // Adjust the resizeMode as needed
+        source={require('./assets/Icons/maroon.png')}
+        style={{ width: 75, height: 75, marginRight: 10, marginTop: 8, }}
+        resizeMode="contain"
       />
     ),
     headerStyle: {
-      backgroundColor: 'maroon', // Specify your desired background color
+      backgroundColor: 'maroon',
     },
-    headerTintColor: '#fff', // Specify the text color of the header title
+    headerTintColor: '#fff', 
     headerTitleStyle: {
-      fontFamily: 'RobotoCondensed-Bold', // Specify your desired font family
+      marginBottom: 15,
+      fontFamily: 'RobotoCondensed-Bold', 
     },
 });
 
@@ -671,6 +672,15 @@ const CalendarStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray',
     marginBottom: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  firstEvent: {
+    height: 100,
+    borderWidth: 1,
+    borderColor: 'lightgray',
+    marginBottom: 20,
+    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
