@@ -7,7 +7,6 @@ import {Dropdown} from 'react-native-element-dropdown';
 import SportsData from './SportsData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
-import { SvgUri } from 'react-native-svg';
 
 const ChangeMonth = ({ currMonth, onForward, onBackward }) => {
  return(
@@ -163,11 +162,12 @@ const EventFilter=({ setFilteredEvents }) => {
 
 const FavoriteList = ({ navigation, favorites }) => {
   return(
-    <Pressable 
-      style={FavoriteListStyles.favView} 
-      onPress={() => navigation.navigate('Favorited events', { favorites })}
-    >
-      <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Favorites</Text>
+    <Pressable onPress={() => navigation.navigate('Favorited events', { favorites })}>
+      {({ pressed })  => (
+        <View style={[FavoriteListStyles.favView, pressed && FavoriteListStyles.clicked]}>
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Favorites</Text>
+        </View>
+      )}
     </Pressable>
   );
 };
@@ -350,42 +350,60 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
 
   return (
     <View style={MakeFilterButtonStyles.popup}>
-  <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
-    {listSports.map((item, index) => (
-      <Pressable key={index} onPress={() => toggleTeamSelection(item)}>
-        {({ pressed }) => (
-          <Text style={[MakeFilterButtonStyles.item, { backgroundColor: selectedTeams.includes(item) ? '#ccc' : pressed ? '#ddd' : 'transparent' }]}>
-            {item}
-          </Text>
-        )}
+    <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
+      {listSports.map((item, index) => (
+        <Pressable key={index} onPress={() => toggleTeamSelection(item)}>
+          {({ pressed }) => (
+            <Text style={[MakeFilterButtonStyles.item, { backgroundColor: selectedTeams.includes(item) ? '#ccc' : pressed ? '#ddd' : 'transparent' }]}>
+              {item}
+            </Text>
+          )}
+        </Pressable>
+      ))}
+    </ScrollView>
+    <View style={MakeFilterButtonStyles.buttonContainer}>
+      <Pressable onPress={filterTeams}> 
+      {({ pressed }) => (
+        <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Apply</Text>
+        </View>
+      )} 
       </Pressable>
-    ))}
-  </ScrollView>
-  <View style={MakeFilterButtonStyles.buttonContainer}>
-    <Button title="Apply" onPress={filterTeams} />
-    <Button title="Close" onPress={onClose} />
+      <Pressable onPress={onClose}> 
+      {({ pressed }) => (
+        <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Close</Text>
+        </View>
+      )} 
+      </Pressable>
+    </View>
   </View>
-</View>
-);
+  );
 };
 
 
 const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
-const [showPopup,setShowPopup] = useState(false);
+  const [showPopup,setShowPopup] = useState(false);
 
-const togglePopup = () => {
-  setShowPopup(!showPopup);
-};
+  const togglePopup = () => {
+    setShowPopup(!showPopup);
+  };
 
-return (
-  <View style={styles.container}>
-    <Button title="Show List" onPress={togglePopup} />
-    {showPopup && <MakeFilterButton onClose={togglePopup}
-    filterTeams={filterTeams} 
-    selectedTeams={selectedTeams}
-    setSelectedTeams={setSelectedTeams} />}
-  </View>
-);
+  return (
+    <View style={styles.container}>
+      <Pressable onPress={togglePopup}> 
+      {({ pressed }) => (
+        <View style={[MakeFilterButtonStyles.button, pressed && MakeFilterButtonStyles.pressedStyle]}>
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Filter teams</Text>
+        </View>
+      )}  
+      </Pressable>
+      {showPopup && <MakeFilterButton onClose={togglePopup}
+      filterTeams={filterTeams} 
+      selectedTeams={selectedTeams}
+      setSelectedTeams={setSelectedTeams} />}
+    </View>
+  );
 };
 
 const FavoritesScreen = ({ route }) => {
@@ -543,11 +561,13 @@ const FavoriteListStyles = StyleSheet.create({
     height: 40,
     width: 80,
     backgroundColor: 'maroon',
-    borderWidth: 1,
     borderRadius: 5,
     alignItems: 'center',
     justifyContent: 'center',
   },
+  clicked: {
+    backgroundColor: 'rgba(87, 0, 0, 1.0)',
+  },  
 });
 
 const ChangeMonthStyles = StyleSheet.create({
@@ -735,7 +755,7 @@ const CalendarStyles = StyleSheet.create({
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
-popup: {
+  popup: {
     backgroundColor: '#fff',
     padding: 20,
     borderRadius: 10,
@@ -751,6 +771,31 @@ popup: {
   item: {
     padding: 10,
     fontSize: 18,
+  },
+  button: {
+    backgroundColor: 'maroon',
+    width: 90,
+    height: 45,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  smallButton: {
+    backgroundColor: 'maroon',
+    width: 80,
+    height: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    marginVertical: 10,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around'
+  },  
+  pressedStyle: {
+    backgroundColor: 'rgba(87, 0, 0, 1.0)',
   },
 });
 
