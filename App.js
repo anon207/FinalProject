@@ -118,7 +118,7 @@ const HomeAwayBox = () => {
 };
 
 
-const EventFilter=({ setFilteredEvents }) => {
+const EventFilter=({ setFilteredEvents,filteredEvents,selectedTeams }) => {
   const [value, setValue] = useState(null);
 
   const data = [
@@ -131,9 +131,9 @@ const EventFilter=({ setFilteredEvents }) => {
     let events = SportsData; 
 
     if (filterValue === 'home') {
-      events = SportsData.filter(event => event.homeAway === 'Home');
-    } else if (filterValue === 'away') {
-      events = SportsData.filter(event => event.homeAway === 'Away');
+      events = SportsData.filter(event => event.homeAway === 'Home' && selectedTeams.includes(event.name));
+    } else if (filterValue === 'away') { 
+      events = SportsData.filter(event => event.homeAway === 'Away'&& selectedTeams.includes(event.name));
     }
     setFilteredEvents(events); 
   };
@@ -172,7 +172,7 @@ const FavoriteList = ({ navigation, favorites }) => {
   );
 };
 
-const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
+const Calendar = ({ filteredEvents, setFilteredEvents, selectedTeams,favorites, setFavorites, navigation }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
 
@@ -224,6 +224,8 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
     <ScrollView contentContainerStyle={CalendarStyles.calendar}>
       <HeaderChangeMonthDayRow
         setFilteredEvents={setFilteredEvents}
+        filteredEvents={filteredEvents}
+        selectedTeams={selectedTeams}
         navigation={navigation}
         favorites={favorites}
         onForward={() => changeMonth(1)}
@@ -244,13 +246,15 @@ const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, 
   );
 };
 
-const HeaderChangeMonthDayRow = ({ setFilteredEvents, navigation, favorites, onForward, onBackward, currMonth }) => {
+const HeaderChangeMonthDayRow = ({ setFilteredEvents,filteredEvents,selectedTeams, navigation, favorites, onForward, onBackward, currMonth }) => {
   return(
     <>
     <CalendarHeader 
         setFilteredEvents={setFilteredEvents}
         navigation={navigation}
         favorites={favorites}
+        filteredEvents={filteredEvents}
+        selectedTeams={selectedTeams}
       />
       <ChangeMonth
         onForward={onForward}
@@ -262,10 +266,10 @@ const HeaderChangeMonthDayRow = ({ setFilteredEvents, navigation, favorites, onF
   );
 };
 
-const CalendarHeader = ({ setFilteredEvents, navigation, favorites }) => {
+const CalendarHeader = ({ setFilteredEvents,filteredEvents,selectedTeams, navigation, favorites }) => {
   return(
     <View style={CalendarStyles.headerContainer}>
-        <EventFilter setFilteredEvents={setFilteredEvents}/>
+        <EventFilter selectedTeams={selectedTeams}setFilteredEvents={setFilteredEvents}filteredEvents={filteredEvents}/>
         <FavoriteList navigation={navigation} favorites={favorites}/>
     </View>
   );
@@ -331,7 +335,7 @@ const renderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
   ));
 };
 
-const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
+const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,AllTeams,NoTeams}) =>{
   const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
   "Women's Cross Country", "Men's Track & Field", "Women's Track & Field", "Field Hockey",
   "Men's Soccer", "Women's Soccer", "Men's Volleyball", "Women's Volleyball", "Softball", 
@@ -348,6 +352,21 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
     }
   };
 
+  const AllClose = () =>{
+    AllTeams();
+    onClose();
+  }
+  
+  const ApplyClose = () =>{
+    filterTeams();
+    onClose();
+  }
+
+  const NoneClose = () =>{
+    NoTeams();
+    onClose();
+  }
+
   return (
     <View style={MakeFilterButtonStyles.popup}>
     <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
@@ -362,17 +381,24 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
       ))}
     </ScrollView>
     <View style={MakeFilterButtonStyles.buttonContainer}>
-      <Pressable onPress={filterTeams}> 
+      <Pressable onPress={ApplyClose}> 
       {({ pressed }) => (
         <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
           <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Apply</Text>
         </View>
       )} 
       </Pressable>
-      <Pressable onPress={onClose}> 
+      <Pressable onPress={AllClose}> 
       {({ pressed }) => (
         <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
-          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Close</Text>
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Select All</Text>
+        </View>
+      )} 
+      </Pressable>
+      <Pressable onPress={NoneClose}> 
+      {({ pressed }) => (
+        <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>DeSelect All</Text>
         </View>
       )} 
       </Pressable>
@@ -382,12 +408,24 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
 };
 
 
-const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
+const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEvents}) =>{
   const [showPopup,setShowPopup] = useState(false);
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+
+  const NoTeams = () =>{
+    const noteams = ([]);
+    setFilteredEvents(SportsData);
+    setSelectedTeams(noteams);
+  }
+
+  const AllTeams = () =>{ 
+    const allTeams = (SportsData.map(event => event.name));
+    setFilteredEvents(SportsData);
+    setSelectedTeams(allTeams);
+  }
 
   return (
     <View style={styles.container}>
@@ -398,7 +436,7 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
         </View>
       )}  
       </Pressable>
-      {showPopup && <MakeFilterButton onClose={togglePopup}
+      {showPopup && <MakeFilterButton onClose={togglePopup} AllTeams={AllTeams} NoTeams={NoTeams}
       filterTeams={filterTeams} 
       selectedTeams={selectedTeams}
       setSelectedTeams={setSelectedTeams} />}
@@ -472,8 +510,8 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
-      <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
+      <Calendar selectedTeams={selectedTeams}filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
+      <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}setFilteredEvents={setFilteredEvents}/>
       <StatusBar style="auto" />
     </ScrollView>
   );
