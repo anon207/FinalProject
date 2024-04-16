@@ -13,7 +13,7 @@ export const RenderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
       <View style={RenderEventsForDayStyles.bottomBar} />
       <Pressable
         key={event.Id}
-        style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? CalendarStyles.Remove : CalendarStyles.favButton}
+        style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? RenderEventsForDayStyles.Remove : RenderEventsForDayStyles.favButton}
         onPress={() => toggleFavorite(event)}
       >
         <Text style={{ color: 'white', fontSize: 10, fontFamily: 'RobotoCondensed-Regular' }}>
@@ -50,5 +50,29 @@ const RenderEventsForDayStyles = StyleSheet.create({
     borderWidth: 1,
     position: 'absolute',
     bottom: 0
+  },
+  favButton: {
+    height: 32.5,
+    width: 65, 
+    backgroundColor: 'maroon',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    position: 'absolute',
+    right: 5,
+    top: 5,
+  },
+  Remove: {
+    height: 32.5,
+    width: 65, 
+    backgroundColor: 'rgba(143, 11, 11, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderRadius: 5,
+    position: 'absolute',
+    right: 5,
+    top: 5,
+    borderWidth: 1,
+    borderColor: 'maroon',
   },
 });

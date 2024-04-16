@@ -28,7 +28,6 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
 
   const AllClose = () =>{
     AllTeams();
-    onClose();
   }
   
   const ApplyClose = () =>{
@@ -38,7 +37,6 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
 
   const NoneClose = () =>{
     NoTeams();
-    onClose();
   }
 
   return (
