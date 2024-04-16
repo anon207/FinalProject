@@ -3,7 +3,7 @@ import React from 'react';
 
 export const RenderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
     return eventsForDay.map((event, eventIndex) => (
-      <View key={eventIndex} style={CalendarStyles.EventDisplay}>
+      <View key={eventIndex} style={CalendarStyles.EventDisplay} testID={`event-${eventIndex}`}>
         {event.homeAway === 'Home' &&
           <View style={CalendarStyles.homeStyle} />
         }

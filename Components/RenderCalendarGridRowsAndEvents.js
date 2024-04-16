@@ -4,29 +4,29 @@ import { CalendarRow } from './CalendarRow';
 import { RenderHomeAwayBoxAndEvents } from './RenderHomeAwayBoxAndEvents';
 
 export const RenderCalendarGridRowsAndEvents = ({ renderCalendarRows, currentMonth, toggleEvents, selectedDay, filteredEvents, eventsForDay, favorites, toggleFavorite }) => {
-    return( 
-      <View style={CalendarStyles.calendarGrid} testID='TEST'>
-          {renderCalendarRows().map((days, index) => (
-            <View key={index}>
-              <CalendarRow
-                key={index}
-                days={days}
-                currentMonth={currentMonth}
-                toggleEvents={toggleEvents}
-                selectedDay={selectedDay}
-                filteredEvents={filteredEvents}
-              />
-              <RenderHomeAwayBoxAndEvents 
-                days={days} 
-                selectedDay={selectedDay} 
-                eventsForDay={eventsForDay} 
-                favorites={favorites} 
-                toggleFavorite={toggleFavorite}
-              />
-            </View>
-          ))}
+  return( 
+    <View style={CalendarStyles.calendarGrid}>
+      {renderCalendarRows().map((days, index) => (
+        <View key={index}>
+          <CalendarRow
+            key={index}
+            days={days}
+            currentMonth={currentMonth}
+            toggleEvents={toggleEvents}
+            selectedDay={selectedDay}
+            filteredEvents={filteredEvents}
+          />
+          <RenderHomeAwayBoxAndEvents 
+            days={days} 
+            selectedDay={selectedDay} 
+            eventsForDay={eventsForDay} 
+            favorites={favorites} 
+            toggleFavorite={toggleFavorite}
+          />
         </View>
-    );
+      ))}
+    </View>
+  );
 };
 
 const CalendarStyles = StyleSheet.create({
