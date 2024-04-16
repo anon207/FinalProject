@@ -9,7 +9,7 @@ export const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
       }
     }
     return(
-      <Pressable onPress={() => toggleEvents(day)}>
+      <Pressable onPress={() => toggleEvents(day)} testID={`day-${day}`}>
         {({ pressed }) => (
           <View style={[CellStyles.cell, (filteredEvents.length > 0 && isSelected) && CellStyles.selectedCell, (filteredEvents.length > 0 && pressed) && CellStyles.pressedCell]}>
             <View style={CellStyles.cellDay}>
