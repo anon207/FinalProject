@@ -20,7 +20,7 @@ export const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
                 <Text style={CellStyles.evt}>{filteredEvents.length} Events</Text>
               }
               {(containsHome && !isSelected) &&
-                <View style={CellStyles.HomeStyle}/>
+                <View style={CellStyles.HomeStyle} testID='home-marker'/>
               }
               {(isSelected && filteredEvents.length > 0) &&
               <View style={CellStyles.Xcontainer}>
