@@ -8,7 +8,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { Calendar } from './Components/Calendar';
 
-const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) =>{
+
+const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,AllTeams,NoTeams}) =>{
   const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
   "Women's Cross Country", "Men's Track & Field", "Women's Track & Field", "Field Hockey",
   "Men's Soccer", "Women's Soccer", "Men's Volleyball", "Women's Volleyball", "Softball", 
@@ -25,6 +26,21 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
     }
   };
 
+  const AllClose = () =>{
+    AllTeams();
+    onClose();
+  }
+  
+  const ApplyClose = () =>{
+    filterTeams();
+    onClose();
+  }
+
+  const NoneClose = () =>{
+    NoTeams();
+    onClose();
+  }
+
   return (
     <View style={MakeFilterButtonStyles.popup}>
     <ScrollView contentContainerStyle={MakeFilterButtonStyles.scrollViewContent}>
@@ -39,17 +55,24 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
       ))}
     </ScrollView>
     <View style={MakeFilterButtonStyles.buttonContainer}>
-      <Pressable onPress={filterTeams}> 
+      <Pressable onPress={ApplyClose}> 
       {({ pressed }) => (
         <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
           <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Apply</Text>
         </View>
       )} 
       </Pressable>
-      <Pressable onPress={onClose}> 
+      <Pressable onPress={AllClose}> 
       {({ pressed }) => (
         <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
-          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Close</Text>
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Select All</Text>
+        </View>
+      )} 
+      </Pressable>
+      <Pressable onPress={NoneClose}> 
+      {({ pressed }) => (
+        <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
+          <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>DeSelect All</Text>
         </View>
       )} 
       </Pressable>
@@ -59,12 +82,24 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams}) 
 };
 
 
-const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
+const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEvents}) =>{
   const [showPopup,setShowPopup] = useState(false);
 
   const togglePopup = () => {
     setShowPopup(!showPopup);
   };
+
+  const NoTeams = () =>{
+    const noteams = ([]);
+    setFilteredEvents(SportsData);
+    setSelectedTeams(noteams);
+  }
+
+  const AllTeams = () =>{ 
+    const allTeams = (SportsData.map(event => event.name));
+    setFilteredEvents(SportsData);
+    setSelectedTeams(allTeams);
+  }
 
   return (
     <View style={styles.container}>
@@ -75,7 +110,7 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams}) =>{
         </View>
       )}  
       </Pressable>
-      {showPopup && <MakeFilterButton onClose={togglePopup}
+      {showPopup && <MakeFilterButton onClose={togglePopup} AllTeams={AllTeams} NoTeams={NoTeams}
       filterTeams={filterTeams} 
       selectedTeams={selectedTeams}
       setSelectedTeams={setSelectedTeams} />}
@@ -149,8 +184,8 @@ const HomeScreen = ({ navigation, route }) => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Calendar filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
-      <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}/>
+      <Calendar selectedTeams={selectedTeams}filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
+      <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}setFilteredEvents={setFilteredEvents}/>
       <StatusBar style="auto" />
     </ScrollView>
   );
