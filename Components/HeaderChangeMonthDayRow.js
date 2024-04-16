@@ -6,7 +6,7 @@ import { DayRow } from './DayRow';
 export const HeaderChangeMonthDayRow = ({ setFilteredEvents, navigation, favorites, onForward, onBackward, currMonth }) => {
     return(
       <>
-      <CalendarHeader 
+        <CalendarHeader 
           setFilteredEvents={setFilteredEvents}
           navigation={navigation}
           favorites={favorites}

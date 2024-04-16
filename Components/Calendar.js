@@ -50,7 +50,7 @@ export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavo
       if (['April', 'June', 'September', 'November'].includes(month)) return 30;
       return month === 'February' ? 29 : 0;
     };
-  
+    
     return (
       <ScrollView contentContainerStyle={CalendarStyles.calendar} testID='calendar-component'>
         <HeaderChangeMonthDayRow

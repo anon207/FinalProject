@@ -5,7 +5,7 @@ import { RenderHomeAwayBoxAndEvents } from './RenderHomeAwayBoxAndEvents';
 
 export const RenderCalendarGridRowsAndEvents = ({ renderCalendarRows, currentMonth, toggleEvents, selectedDay, filteredEvents, eventsForDay, favorites, toggleFavorite }) => {
     return( 
-      <View style={CalendarStyles.calendarGrid}>
+      <View style={CalendarStyles.calendarGrid} testID='TEST'>
           {renderCalendarRows().map((days, index) => (
             <View key={index}>
               <CalendarRow
