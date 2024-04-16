@@ -7,7 +7,7 @@ import SportsData from './SportsData.json';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { Calendar } from './Components/Calendar';
-
+import { FavoritesScreen } from './Components/FavoriteScreen';
 
 const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,AllTeams,NoTeams}) =>{
   const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
@@ -28,7 +28,6 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
 
   const AllClose = () =>{
     AllTeams();
-    onClose();
   }
   
   const ApplyClose = () =>{
@@ -38,7 +37,6 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
 
   const NoneClose = () =>{
     NoTeams();
-    onClose();
   }
 
   return (
@@ -115,22 +113,6 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEve
       selectedTeams={selectedTeams}
       setSelectedTeams={setSelectedTeams} />}
     </View>
-  );
-};
-
-const FavoritesScreen = ({ route }) => {
-  const { favorites } = route.params;
-  return(
-    <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
-      {favorites.map((event, index) => (
-        <View key={index} style={[CalendarStyles.EventDisplay, (index === 0) && CalendarStyles.firstEvent]}>
-          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
-          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
-          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.location}</Text>
-          <View style={CalendarStyles.bottomBar} />
-        </View>
-      ))}
-    </ScrollView>
   );
 };
 
@@ -230,15 +212,6 @@ const navigationStyles = StyleSheet.create({
       marginBottom: 15,
       fontFamily: 'RobotoCondensed-Bold', 
     },
-});
-
-const FavoriteScreenStyles = StyleSheet.create({
-  defualtView: {
-    width: 390,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  }
 });
 
 const MakeFilterButtonStyles = StyleSheet.create({
