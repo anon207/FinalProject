@@ -5,7 +5,7 @@ export const RenderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
   return eventsForDay.map((event, eventIndex) => (
     <View key={eventIndex} style={RenderEventsForDayStyles.EventDisplay} testID={`event-${eventIndex}`}>
       {event.homeAway === 'Home' &&
-        <View style={RenderEventsForDayStyles.homeStyle} />
+        <View style={RenderEventsForDayStyles.homeStyle} testID={`event-${eventIndex}-home-marker`}/>
       }
       <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
       <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
@@ -13,11 +13,12 @@ export const RenderEventsForDay = (eventsForDay, favorites, toggleFavorite) => {
       <View style={RenderEventsForDayStyles.bottomBar} />
       <Pressable
         key={event.Id}
-        style={( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? RenderEventsForDayStyles.Remove : RenderEventsForDayStyles.favButton}
+        style={( (favorites.some(favorite => favorite.Id === event.Id)) ) ? RenderEventsForDayStyles.Remove : RenderEventsForDayStyles.favButton}
         onPress={() => toggleFavorite(event)}
+        testID={`event-${eventIndex}-fav-button`}
       >
         <Text style={{ color: 'white', fontSize: 10, fontFamily: 'RobotoCondensed-Regular' }}>
-          {( (event.favorite === false) || (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
+          {( (favorites.some(favorite => favorite.Id === event.Id)) ) ? 'Unfavorite' : 'Favorite'}
         </Text>
       </Pressable>
     </View>

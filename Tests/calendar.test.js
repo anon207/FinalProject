@@ -53,6 +53,19 @@ describe('Calendar component', () => {
             fireEvent.press(backwardButton);
             expect(monthText.props.children).toStrictEqual([" ", "October", " "]);
         });
+
+        test('Edge case: going backward from January and forward from December', () => {
+            const { getByTestId } = render(<TestWrapper />);
+            const backwardButton = getByTestId('prev-month');
+            const forwardButton = getByTestId('next-month');
+            const monthText = getByTestId('current-month');
+            expect(monthText.props.children).toStrictEqual([" ", "January", " "]);
+            fireEvent.press(backwardButton);
+            expect(monthText.props.children).toStrictEqual([" ", "December", " "]);
+            fireEvent.press(forwardButton);
+            expect(monthText.props.children).toStrictEqual([" ", "January", " "]);
+        });
+
     });
    
 });
