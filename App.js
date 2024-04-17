@@ -9,7 +9,7 @@ import { useFonts } from 'expo-font';
 import { Calendar } from './Components/Calendar';
 import { FavoritesScreen } from './Components/FavoriteScreen';
 
-const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,AllTeams,NoTeams}) =>{
+const MakeFilterButton = ({ onClose, filterTeams, selectedTeams, setSelectedTeams, selectAllTeams, NoTeams }) =>{
   const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
   "Women's Cross Country", "Men's Track & Field", "Women's Track & Field", "Field Hockey",
   "Men's Soccer", "Women's Soccer", "Men's Volleyball", "Women's Volleyball", "Softball", 
@@ -18,7 +18,7 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
 
   const toggleTeamSelection = (team) => {
     if (!selectedTeams) {
-      setSelectedTeams([team]); // Initialize selectedTeams as an array with the first selected team
+      setSelectedTeams([team]); 
     } else if (selectedTeams.includes(team)) {
       setSelectedTeams(selectedTeams.filter(selectedTeam => selectedTeam !== team));
     } else {
@@ -26,8 +26,8 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
     }
   };
 
-  const AllClose = () =>{
-    AllTeams();
+  const All = () =>{
+    selectAllTeams();
   }
   
   const ApplyClose = () =>{
@@ -60,7 +60,7 @@ const MakeFilterButton = ({onClose,filterTeams,selectedTeams,setSelectedTeams,Al
         </View>
       )} 
       </Pressable>
-      <Pressable onPress={AllClose}> 
+      <Pressable onPress={All}> 
       {({ pressed }) => (
         <View style={[MakeFilterButtonStyles.smallButton, pressed && MakeFilterButtonStyles.pressedStyle]}> 
           <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Select All</Text>
@@ -93,7 +93,7 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEve
     setSelectedTeams(noteams);
   }
 
-  const AllTeams = () =>{ 
+  const selectAllTeams = () =>{ 
     const allTeams = (SportsData.map(event => event.name));
     setFilteredEvents(SportsData);
     setSelectedTeams(allTeams);
@@ -108,7 +108,7 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEve
         </View>
       )}  
       </Pressable>
-      {showPopup && <MakeFilterButton onClose={togglePopup} AllTeams={AllTeams} NoTeams={NoTeams}
+      {showPopup && <MakeFilterButton onClose={togglePopup} selectAllTeams={selectAllTeams} NoTeams={NoTeams}
       filterTeams={filterTeams} 
       selectedTeams={selectedTeams}
       setSelectedTeams={setSelectedTeams} />}

@@ -13,7 +13,7 @@ export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavo
     const fullDate = `2024-${formattedMonth}-${formattedDay}`;
   
     const eventsForDay = filteredEvents.filter(event => event.date === fullDate);
-  
+
     const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
   
     const toggleFavorite = async (event) => {
