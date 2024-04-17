@@ -4,9 +4,9 @@ import { RenderEventsForDay } from './RenderEventsForDay';
 
 export const RenderHomeAwayBoxAndEvents = ({days, selectedDay, eventsForDay, favorites, toggleFavorite}) => {
   return(
-    days.includes(selectedDay) && (
+    (days.includes(selectedDay) && eventsForDay.length > 0) && (
       <>
-        <HomeAwayBox />
+        <HomeAwayBox day={selectedDay}/>
         {RenderEventsForDay(eventsForDay, favorites, toggleFavorite)}
       </>
     )
