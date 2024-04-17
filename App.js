@@ -18,7 +18,7 @@ const MakeFilterButton = ({ onClose, filterTeams, selectedTeams, setSelectedTeam
 
   const toggleTeamSelection = (team) => {
     if (!selectedTeams) {
-      setSelectedTeams([team]); // Initialize selectedTeams as an array with the first selected team
+      setSelectedTeams([team]); 
     } else if (selectedTeams.includes(team)) {
       setSelectedTeams(selectedTeams.filter(selectedTeam => selectedTeam !== team));
     } else {
