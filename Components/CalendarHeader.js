@@ -3,11 +3,11 @@ import { React } from 'react';
 import { EventFilter } from './EventFilter';
 import { FavoriteList } from './FavoriteList';
 
-export const CalendarHeader = ({ setFilteredEvents, navigation, favorites }) => {
+export const CalendarHeader = ({ setFilteredEvents, navigation }) => {
     return(
       <View style={CalendarHeaderStyles.headerContainer}>
           <EventFilter setFilteredEvents={setFilteredEvents}/>
-          <FavoriteList navigation={navigation} favorites={favorites}/>
+          <FavoriteList navigation={navigation}/>
       </View>
     );
   };

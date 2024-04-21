@@ -1,17 +1,17 @@
 import { Text, View, Pressable, StyleSheet } from 'react-native';
-import { React } from 'react';
+import React from 'react';
 
-export const FavoriteList = ({ navigation, favorites }) => {
-    return(
-      <Pressable onPress={() => navigation.navigate('Favorited events', { favorites })}>
+export const FavoriteList = ({ navigation }) => {
+  return(
+      <Pressable onPress={() => navigation.navigate('Favorited events')}>
         {({ pressed })  => (
           <View style={[FavoriteListStyles.favView, pressed && FavoriteListStyles.clicked]}>
             <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Favorites</Text>
           </View>
         )}
       </Pressable>
-    );
-  };
+  );
+};
 
   const FavoriteListStyles = StyleSheet.create({
     favView: {

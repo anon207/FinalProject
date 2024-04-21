@@ -1,6 +1,6 @@
 import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, ScrollView, Pressable, Image } from 'react-native';
-import { useState, useEffect, React } from 'react';
+import { useState, useEffect, React, createContext, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import SportsData from './SportsData.json';
@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useFonts } from 'expo-font';
 import { Calendar } from './Components/Calendar';
 import { FavoritesScreen } from './Components/FavoriteScreen';
+import { FavoritesContext } from './Components/FavoriteContext';
 
 const MakeFilterButton = ({ onClose, filterTeams, selectedTeams, setSelectedTeams, selectAllTeams, NoTeams }) =>{
   const listSports = ["Baseball", "Men's Basketball", "Women's Basketball", "Men's Cross Country",
@@ -146,13 +147,9 @@ const useAsyncStorage = (key, initialValue) => {
   return [storedValue, saveValue];
 };
 
-const HomeScreen = ({ navigation, route }) => {
+const HomeScreen = ({ navigation }) => {
   const [selectedTeams,setSelectedTeams] = useState([]);
-  const [filteredEvents, setFilteredEvents] = useState(SportsData);
-  const [favorites, setFavorites] = useState([]);
-
-  useAsyncStorage('favorites', favorites);
-  useAsyncStorage('filteredEvents', filteredEvents);
+  const { favorites, setFavorites, filteredEvents, setFilteredEvents } = useContext(FavoritesContext);
 
   const changeEvents = (selectedTeams) => {
     const changedEvents = SportsData.filter(event => selectedTeams.includes(event.name));
@@ -175,6 +172,11 @@ const HomeScreen = ({ navigation, route }) => {
 
 export default function App() {
   const [favorites, setFavorites] = useState([]);
+  const [filteredEvents, setFilteredEvents] = useState(SportsData);
+
+  useAsyncStorage('favorites', favorites);
+  useAsyncStorage('filteredEvents', filteredEvents);
+
   const [fontsLoaded] = useFonts({
     'RobotoCondensed-Bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
     'RobotoCondensed-Regular': require('./assets/fonts/RobotoCondensed-Regular.ttf')
@@ -187,12 +189,14 @@ export default function App() {
   const Stack = createStackNavigator();
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={navigationStyles}>
-        <Stack.Screen name="Composite Calendar" component={HomeScreen}/>
-        <Stack.Screen name="Favorited events" component={FavoritesScreen} initialParams={{favorites: favorites}}/>
-      </Stack.Navigator>
-    </NavigationContainer>
+    <FavoritesContext.Provider value={{ favorites, setFavorites, filteredEvents, setFilteredEvents }}>
+      <NavigationContainer>
+        <Stack.Navigator screenOptions={navigationStyles}>
+          <Stack.Screen name="Composite Calendar" component={HomeScreen}/>
+          <Stack.Screen name="Favorited events" component={FavoritesScreen}/>
+        </Stack.Navigator>
+      </NavigationContainer>
+    </FavoritesContext.Provider>
   );
 }
 
