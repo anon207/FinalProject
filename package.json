@@ -13,11 +13,14 @@
   "jest": {
     "preset": "react-native",
     "transformIgnorePatterns": [
-      "node_modules/(?!(react-native|@react-native|react-native-element-dropdown)/)"
+      "node_modules/(?!(react-native|@react-native|react-native-element-dropdown|react-native-triangle)/)"
     ],
     "setupFilesAfterEnv": [
-      "@testing-library/react-native/extend-expect"
-    ]
+      "@testing-library/react-native/extend-expect",
+      "./node_modules/react-native-gesture-handler/jestSetup.js"
+    ],
+    "testEnvironment": "node",
+    "transform": {}
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "1.21.0",
