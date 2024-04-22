@@ -1,17 +1,25 @@
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import React from 'react';
 
-export const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
+export const Cell = ({ day, toggleEvents, isSelected, filteredEvents, favorites }) => {
   let containsHome = false;
   for(const event of filteredEvents) {
     if(event.homeAway === 'Home') {
       containsHome = true;
     }
   }
+
+  let containsFav = false;
+  for(const event of filteredEvents) {
+    if(favorites.some(favorite => favorite.Id === event.Id)) {
+      containsFav = true;
+    }
+  }
+console.log(favorites[0]);
   return(
     <Pressable onPress={() => toggleEvents(day)} testID={`day-${day}`}>
       {({ pressed }) => (
-        <View style={[CellStyles.cell, (filteredEvents.length > 0 && isSelected) && CellStyles.selectedCell, (filteredEvents.length > 0 && pressed) && CellStyles.pressedCell]}>
+        <View style={[CellStyles.cell, (filteredEvents.length > 0 && isSelected) && CellStyles.selectedCell, (filteredEvents.length > 0 && pressed) && CellStyles.pressedCell, (containsFav) && CellStyles.favorited]}>
           <View style={CellStyles.cellDay}>
             <Text style={CellStyles.dayText}>{day}</Text>
           </View>
@@ -36,6 +44,9 @@ export const Cell = ({ day, toggleEvents, isSelected, filteredEvents }) => {
 };
 
 const CellStyles = StyleSheet.create({
+  favorited: {
+    backgroundColor: 'maroon',
+  },
   cell: {
     height: 100,
     width: 55,

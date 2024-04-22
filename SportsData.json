@@ -5,7 +5,6 @@
     "location": "Stadium",
     "homeAway": "Home",
     "date": "2024-04-01",
-    "favorite": "false",
     "Id": 0
   },
   {
@@ -14,7 +13,6 @@
     "location": "Arena",
     "homeAway": "Away",
     "date": "2024-04-01",
-    "favorite": "false",
     "Id": 1
   },
   {
@@ -23,7 +21,6 @@
     "location": "Gymnasium",
     "homeAway": "Home",
     "date": "2024-04-01",
-    "favorite": "false",
     "Id": 2
   },
   {
@@ -32,7 +29,6 @@
     "location": "Park",
     "homeAway": "Away",
     "date": "2024-04-04",
-    "favorite": "false",
     "Id": 3
   },
   {
@@ -41,7 +37,6 @@
     "location": "Trail",
     "homeAway": "Home",
     "date": "2024-04-05",
-    "favorite": "false",
     "Id": 4
   },
   {
@@ -50,7 +45,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-04-06",
-    "favorite": "false",
     "Id": 5
   },
   {
@@ -59,7 +53,6 @@
     "location": "Stadium",
     "homeAway": "Home",
     "date": "2024-04-07",
-    "favorite": "false",
     "Id": 6
   },
   {
@@ -68,7 +61,6 @@
     "location": "Field",
     "homeAway": "Home",
     "date": "2024-04-08",
-    "favorite": "false",
     "Id": 7
   },
   {
@@ -77,7 +69,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-04-09",
-    "favorite": "false",
     "Id": 8
   },
   {
@@ -86,7 +77,6 @@
     "location": "Field",
     "homeAway": "Home",
     "date": "2024-04-10",
-    "favorite": "false",
     "Id": 9
   },
   {
@@ -95,7 +85,6 @@
     "location": "Arena",
     "homeAway": "Away",
     "date": "2024-04-11",
-    "favorite": "false",
     "Id": 10
   },
   {
@@ -104,7 +93,6 @@
     "location": "Gymnasium",
     "homeAway": "Home",
     "date": "2024-04-12",
-    "favorite": "false",
     "Id": 11
   },
   {
@@ -113,7 +101,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-04-13",
-    "favorite": "false",
     "Id": 12
   },
   {
@@ -122,7 +109,6 @@
     "location": "Stadium",
     "homeAway": "Home",
     "date": "2024-04-14",
-    "favorite": "false",
     "Id": 13
   },
   {
@@ -131,7 +117,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-04-15",
-    "favorite": "false",
     "Id": 14
   },
   {
@@ -140,7 +125,6 @@
     "location": "Court",
     "homeAway": "Home",
     "date": "2024-04-16",
-    "favorite": "false",
     "Id": 15
   },
   {
@@ -149,7 +133,6 @@
     "location": "Court",
     "homeAway": "Away",
     "date": "2024-04-17",
-    "favorite": "false",
     "Id": 16
   },
   {
@@ -158,7 +141,6 @@
     "location": "Course",
     "homeAway": "Home",
     "date": "2024-04-18",
-    "favorite": "false",
     "Id": 17
   },
   {
@@ -167,7 +149,6 @@
     "location": "Pool",
     "homeAway": "Away",
     "date": "2024-04-19",
-    "favorite": "false",
     "Id": 18
   },
   {
@@ -176,7 +157,6 @@
     "location": "Pool",
     "homeAway": "Home",
     "date": "2024-04-20",
-    "favorite": "false",
     "Id": 19
   },
   {
@@ -185,7 +165,6 @@
     "location": "Gymnasium",
     "homeAway": "Away",
     "date": "2024-04-21",
-    "favorite": "false",
     "Id": 20
   },
   {
@@ -203,7 +182,6 @@
     "location": "Stadium",
     "homeAway": "Away",
     "date": "2024-04-23",
-    "favorite": "false",
     "Id": 22
   },
   {
@@ -212,7 +190,6 @@
     "location": "Arena",
     "homeAway": "Home",
     "date": "2024-04-24",
-    "favorite": "false",
     "Id": 23
   },
   {
@@ -221,7 +198,6 @@
     "location": "Gymnasium",
     "homeAway": "Away",
     "date": "2024-04-25",
-    "favorite": "false",
     "Id": 24
   },
   {
@@ -230,7 +206,6 @@
     "location": "Park",
     "homeAway": "Home",
     "date": "2024-04-26",
-    "favorite": "false",
     "Id": 25
   },
   {
@@ -239,7 +214,6 @@
     "location": "Trail",
     "homeAway": "Away",
     "date": "2024-04-27",
-    "favorite": "false",
     "Id": 26
   },
   {
@@ -248,7 +222,6 @@
     "location": "Field",
     "homeAway": "Home",
     "date": "2024-04-28",
-    "favorite": "false",
     "Id": 27
   },
   {
@@ -257,7 +230,6 @@
     "location": "Stadium",
     "homeAway": "Away",
     "date": "2024-04-29",
-    "favorite": "false",
     "Id": 28
   },
   {
@@ -266,7 +238,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-04-30",
-    "favorite": "false",
     "Id": 29
   },
   {
@@ -275,7 +246,6 @@
     "location": "Field",
     "homeAway": "Home",
     "date": "2024-05-01",
-    "favorite": "false",
     "Id": 30
   },
   {
@@ -284,7 +254,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-05-02",
-    "favorite": "false",
     "Id": 31
   },
   {
@@ -293,7 +262,6 @@
     "location": "Arena",
     "homeAway": "Home",
     "date": "2024-05-03",
-    "favorite": "false",
     "Id": 32
   },
   {
@@ -302,7 +270,6 @@
     "location": "Gymnasium",
     "homeAway": "Away",
     "date": "2024-05-04",
-    "favorite": "false",
     "Id": 33
   },
   {
@@ -311,7 +278,6 @@
     "location": "Field",
     "homeAway": "Home",
     "date": "2024-05-05",
-    "favorite": "false",
     "Id": 34
   },
   {
@@ -320,7 +286,6 @@
     "location": "Stadium",
     "homeAway": "Away",
     "date": "2024-05-06",
-    "favorite": "false",
     "Id": 35
   },
   {
@@ -329,7 +294,6 @@
     "location": "Field",
     "homeAway": "Away",
     "date": "2024-05-07",
-    "favorite": "false",
     "Id": 36
   }
     

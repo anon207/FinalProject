@@ -2,7 +2,7 @@ import { View, StyleSheet } from 'react-native';
 import React from 'react';
 import { Cell } from './Cell';
 
-export const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay, filteredEvents}) => {
+export const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay, filteredEvents, favorites }) => {
   return (
     <View style={CalendarRowStyles.calendarGrid}>
       {days.map(day => {
@@ -20,6 +20,7 @@ export const CalendarRow = ({ days, currentMonth, toggleEvents, selectedDay, fil
             toggleEvents={toggleEvents}
             isSelected={selectedDay === day}
             filteredEvents={eventsForDay}
+            favorites={favorites}
           />
         );
       })}
