@@ -10,8 +10,23 @@ export const FavoritesScreen = () => {
     setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
     setFilteredEvents(updatedEvents);
   };
+
   return(
     <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
+      <Pressable onPress={() => setFavorites([])}>
+        {({ pressed }) => (
+          <View style={[FavoriteScreenStyles.removeAll, pressed && FavoriteScreenStyles.pressedEvt]}>
+            <Text style={{color: 'white', fontFamily: 'RobotoCondensed-Regular'}}>Unfavorite all</Text>
+          </View>
+        )}
+      </Pressable>
+      {favorites.length === 0 &&
+        <View style={FavoriteScreenStyles.noEvents}>
+          <Text style={{fontFamily: 'RobotoCondensed-Regular', fontSize: 24}}>
+            You have no favorited events!
+          </Text>
+        </View>
+      }
       {favorites.map((event, eventIndex) => (
         <View key={eventIndex} style={[FavoriteScreenStyles.EventDisplay, (eventIndex === 0) && FavoriteScreenStyles.firstEvent]}>
           {event.homeAway === 'Home' &&
@@ -37,7 +52,25 @@ export const FavoritesScreen = () => {
   );
 };
 
-const FavoriteScreenStyles = StyleSheet.create({
+const FavoriteScreenStyles = StyleSheet.create({  
+  pressedEvt: {
+    backgroundColor: 'rgba(87, 0, 0, 1.0)',
+  },
+  noEvents: {
+    width: 385,
+    height: 800,
+    alignItems: 'center'
+  },
+  removeAll: {
+    width: 100,
+    height: 50,
+    backgroundColor: 'maroon',
+    borderRadius: 5,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
+    marginBottom: 20,
+  },
   defualtView: {
     width: 390,
     backgroundColor: '#fff',
@@ -58,7 +91,6 @@ const FavoriteScreenStyles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'lightgray', 
     marginBottom: 20,
-    marginTop: 20,
     alignItems: 'center',
     justifyContent: 'center',
   },
