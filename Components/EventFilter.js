@@ -26,6 +26,7 @@ export const EventFilter=({ setFilteredEvents }) => {
   return (
     <View>
       <Dropdown
+        accessibilityLabel="Event Dropdown"
         data={data}
         labelField="label"
         valueField="value"
