@@ -145,7 +145,7 @@ const AsyncStorageHandler = ({ dataKey, data, setData }) => {
     saveData();
   }, [dataKey, data]);
 
-  return null; // or you can return a placeholder if necessary
+  return null; 
 };
 
 const HomeScreen = ({ navigation }) => {
@@ -176,7 +176,7 @@ const HomeScreen = ({ navigation }) => {
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
-  
+
   const [fontsLoaded] = useFonts({
     'RobotoCondensed-Bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
     'RobotoCondensed-Regular': require('./assets/fonts/RobotoCondensed-Regular.ttf')

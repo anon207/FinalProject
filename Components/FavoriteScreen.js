@@ -3,12 +3,10 @@ import React, { useContext } from 'react';
 import { FavoritesContext } from './FavoriteContext';
 
 export const FavoritesScreen = () => {
-  const { favorites, setFavorites, filteredEvents, setFilteredEvents } = useContext(FavoritesContext);
+  const { favorites, setFavorites } = useContext(FavoritesContext);
 
-  const toggleFavorite = async (event) => {
-    const updatedEvents = filteredEvents.map(e => e.Id === event.Id ? { ...e, favorite: false } : e);
+  const toggleFavorite = (event) => {
     setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
-    setFilteredEvents(updatedEvents);
   };
 
   return(

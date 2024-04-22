@@ -16,16 +16,12 @@ export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavo
 
   const toggleEvents = day => setSelectedDay(selectedDay === day ? null : day);
 
-  const toggleFavorite = async (event) => {
-    const updatedEvents = filteredEvents.map(e => e.Id === event.Id ? { ...e, favorite: !e.favorite } : e);
-
-    if (event.favorite) {
-        setFavorites(prevFavorites => [...prevFavorites, event]);
-    } else {
+  const toggleFavorite = (event) => {
+    if (favorites.some(favorite => favorite.Id === event.Id)) {
         setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
+    } else {
+        setFavorites(prevFavorites => [...prevFavorites, event]);
     }
-
-    setFilteredEvents(updatedEvents);
   };
 
   const changeMonth = (increment) => {

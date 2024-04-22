@@ -15,7 +15,7 @@ export const Cell = ({ day, toggleEvents, isSelected, filteredEvents, favorites 
       containsFav = true;
     }
   }
-console.log(favorites[0]);
+
   return(
     <Pressable onPress={() => toggleEvents(day)} testID={`day-${day}`}>
       {({ pressed }) => (
