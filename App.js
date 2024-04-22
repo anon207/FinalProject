@@ -117,34 +117,35 @@ const FilterButton = ({filterTeams,selectedTeams,setSelectedTeams,setFilteredEve
   );
 };
 
-const useAsyncStorage = (key, initialValue) => {
-  const [storedValue, setStoredValue] = useState(initialValue);
-
+const AsyncStorageHandler = ({ dataKey, data, setData }) => {
   useEffect(() => {
-    const loadStoredValue = async () => {
+    const loadData = async () => {
       try {
-        const data = await AsyncStorage.getItem(key);
-        if (data !== null) {
-          setStoredValue(JSON.parse(data));
+        const storedData = await AsyncStorage.getItem(dataKey);
+        if (storedData !== null) {
+          setData(JSON.parse(storedData));
         }
       } catch (error) {
-        console.error(`Error loading ${key} from AsyncStorage:`, error);
+        console.error(`Error loading ${dataKey} data:`, error);
       }
     };
 
-    loadStoredValue();
-  }, [key]);
+    loadData();
+  }, [dataKey, setData]);
 
-  const saveValue = async (value) => {
-    try {
-      await AsyncStorage.setItem(key, JSON.stringify(value));
-      setStoredValue(value);
-    } catch (error) {
-      console.error(`Error saving ${key} to AsyncStorage:`, error);
-    }
-  };
+  useEffect(() => {
+    const saveData = async () => {
+      try {
+        await AsyncStorage.setItem(dataKey, JSON.stringify(data));
+      } catch (error) {
+        console.error(`Error saving ${dataKey} data:`, error);
+      }
+    };
 
-  return [storedValue, saveValue];
+    saveData();
+  }, [dataKey, data]);
+
+  return null; // or you can return a placeholder if necessary
 };
 
 const HomeScreen = ({ navigation }) => {
@@ -165,6 +166,8 @@ const HomeScreen = ({ navigation }) => {
     <ScrollView contentContainerStyle={styles.container}>
       <Calendar selectedTeams={selectedTeams}filteredEvents={filteredEvents} setFilteredEvents={setFilteredEvents} favorites={favorites} setFavorites={setFavorites} navigation={navigation}/>
       <FilterButton filterTeams={filterTeams} selectedTeams={selectedTeams} setSelectedTeams={setSelectedTeams}setFilteredEvents={setFilteredEvents}/>
+      <AsyncStorageHandler dataKey="favorites" data={favorites} setData={setFavorites} />
+      <AsyncStorageHandler dataKey="filteredEvents" data={filteredEvents} setData={setFilteredEvents} />
       <StatusBar style="auto" />
     </ScrollView>
   );
@@ -173,10 +176,7 @@ const HomeScreen = ({ navigation }) => {
 export default function App() {
   const [favorites, setFavorites] = useState([]);
   const [filteredEvents, setFilteredEvents] = useState(SportsData);
-
-  useAsyncStorage('favorites', favorites);
-  useAsyncStorage('filteredEvents', filteredEvents);
-
+  
   const [fontsLoaded] = useFonts({
     'RobotoCondensed-Bold': require('./assets/fonts/RobotoCondensed-Bold.ttf'),
     'RobotoCondensed-Regular': require('./assets/fonts/RobotoCondensed-Regular.ttf')
