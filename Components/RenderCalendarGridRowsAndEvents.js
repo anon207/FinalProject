@@ -15,6 +15,7 @@ export const RenderCalendarGridRowsAndEvents = ({ renderCalendarRows, currentMon
             toggleEvents={toggleEvents}
             selectedDay={selectedDay}
             filteredEvents={filteredEvents}
+            favorites={favorites}
           />
           <RenderHomeAwayBoxAndEvents 
             days={days} 
