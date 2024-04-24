@@ -52,8 +52,8 @@ export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavo
       <HeaderChangeMonthDayRow
         setFilteredEvents={setFilteredEvents}
         navigation={navigation}
-        onForward={() => changeMonth(1)}
-        onBackward={() => changeMonth(-1)}
+        onForward={() => {changeMonth(1), setSelectedDay(null)}}
+        onBackward={() => {changeMonth(-1), setSelectedDay(null)}}
         currMonth={months[currentMonth]}
       />
       <RenderCalendarGridRowsAndEvents 
