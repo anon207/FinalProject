@@ -74,7 +74,6 @@ const FavoriteScreenStyles = StyleSheet.create({
   dateStyle: {
     width: 80,
     height: 20,
-    //backgroundColor: 'lightgrey',
     justifyContent: 'center',
     alignItems: 'flex-start',
     position: 'absolute',
