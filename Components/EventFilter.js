@@ -3,7 +3,7 @@ import { useState, React } from 'react';
 import { Dropdown } from 'react-native-element-dropdown';
 import SportsData from '../SportsData.json';
 
-export const EventFilter=({ setFilteredEvents }) => {
+export const EventFilter=({ setFilteredEvents, selectedTeams }) => {
   const [value, setValue] = useState(null);
 
   const data = [
@@ -16,9 +16,9 @@ export const EventFilter=({ setFilteredEvents }) => {
     let events = SportsData; 
 
     if (filterValue === 'home') {
-      events = SportsData.filter(event => event.homeAway === 'Home');
+      events = events.filter(event => event.homeAway === 'Home' && selectedTeams.includes(event.name));
     } else if (filterValue === 'away') {
-      events = SportsData.filter(event => event.homeAway === 'Away');
+      events = events.filter(event => event.homeAway === 'Away' && selectedTeams.includes(event.name));
     }
     setFilteredEvents(events); 
   };

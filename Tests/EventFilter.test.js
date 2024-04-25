@@ -3,13 +3,14 @@ import { render, screen,fireEvent } from '@testing-library/react-native';
 import { EventFilter } from '../Components/EventFilter'; 
 
 jest.mock('../SportsData.json', () => [
-  { id: 1, homeAway: 'Home', game: 'Soccer' },
-  { id: 2, homeAway: 'Away', game: 'Basketball' },
-  { id: 3, homeAway: 'Home', game: 'Football' },
+  { Id: 0, date: '2024-04-01', homeAway: 'Home', location: 'Stadium', name: "Baseball", time: "14:00" },
+  { Id: 1, date: '2024-04-01', homeAway: 'Away', location: 'Park', name: "Basketball", time: "12:00" },
 ]);
 
 describe('EventFilter', () => {
   const setFilteredEvents = jest.fn();
+  
+  const selectedTeams = ["Baseball", "Basketball"];
 
   test('renders correctly', () => {
     const { getByText } = render(<EventFilter setFilteredEvents={setFilteredEvents} />);
@@ -22,6 +23,7 @@ describe('EventFilter', () => {
     render(
         <EventFilter
         setFilteredEvents={setFilteredEvents}
+        selectedTeams={selectedTeams}
         />
           );
         
@@ -29,9 +31,8 @@ describe('EventFilter', () => {
     fireEvent(dropdown, 'onChange', { label: 'All Games', value: 'all' });
       
     expect(setFilteredEvents).toHaveBeenCalledWith([
-        { id: 1, homeAway: 'Home', game: 'Soccer' },
-        { id: 2, homeAway: 'Away', game: 'Basketball' },
-        { id: 3, homeAway: 'Home', game: 'Football' },
+      { Id: 0, date: '2024-04-01', homeAway: 'Home', location: 'Stadium', name: "Baseball", time: "14:00" },
+      { Id: 1, date: '2024-04-01', homeAway: 'Away', location: 'Park', name: "Basketball", time: "12:00" },    
     ]);
   });
   
@@ -39,6 +40,7 @@ describe('EventFilter', () => {
     render(
           <EventFilter
           setFilteredEvents={setFilteredEvents}
+          selectedTeams={selectedTeams}
           />
           );
         
@@ -46,8 +48,7 @@ describe('EventFilter', () => {
     fireEvent(dropdown, 'onChange', { label: 'Home', value: 'home' });
       
     expect(setFilteredEvents).toHaveBeenCalledWith([
-        { id: 1, homeAway: 'Home', game: 'Soccer' },
-        { id: 3, homeAway: 'Home', game: 'Football' },
+      { Id: 0, date: '2024-04-01', homeAway: 'Home', location: 'Stadium', name: "Baseball", time: "14:00" },
     ]);
   });
 
@@ -55,6 +56,7 @@ describe('EventFilter', () => {
   render(
         <EventFilter
         setFilteredEvents={setFilteredEvents}
+        selectedTeams={selectedTeams}
         />
         );
       
@@ -62,7 +64,7 @@ describe('EventFilter', () => {
   fireEvent(dropdown, 'onChange', { label: 'Away', value: 'away' });
     
   expect(setFilteredEvents).toHaveBeenCalledWith([
-      { id: 2, homeAway: 'Away', game: 'Basketball' },
+    { Id: 1, date: '2024-04-01', homeAway: 'Away', location: 'Park', name: "Basketball", time: "12:00" }  
     ]);
   });
     

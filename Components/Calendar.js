@@ -3,7 +3,7 @@ import { useState, React } from 'react';
 import { HeaderChangeMonthDayRow } from './HeaderChangeMonthDayRow';
 import { RenderCalendarGridRowsAndEvents } from './RenderCalendarGridRowsAndEvents';
 
-export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
+export const Calendar = ({ selectedTeams, filteredEvents, setFilteredEvents, favorites, setFavorites, navigation }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [currentMonth, setCurrentMonth] = useState(0);
 
@@ -55,6 +55,7 @@ export const Calendar = ({ filteredEvents, setFilteredEvents, favorites, setFavo
         onForward={() => {changeMonth(1), setSelectedDay(null)}}
         onBackward={() => {changeMonth(-1), setSelectedDay(null)}}
         currMonth={months[currentMonth]}
+        selectedTeams={selectedTeams}
       />
       <RenderCalendarGridRowsAndEvents 
         renderCalendarRows={renderCalendarRows}
