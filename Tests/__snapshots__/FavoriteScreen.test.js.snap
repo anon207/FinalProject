@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FavoritesScreen renders correctly 1`] = `
+<RCTScrollView
+  contentContainerStyle={
+    {
+      "alignItems": "center",
+      "backgroundColor": "#fff",
+      "justifyContent": "center",
+      "width": 390,
+    }
+  }
+>
+  <View>
+    <View
+      accessibilityState={
+        {
+          "busy": undefined,
+          "checked": undefined,
+          "disabled": undefined,
+          "expanded": undefined,
+          "selected": undefined,
+        }
+      }
+      accessibilityValue={
+        {
+          "max": undefined,
+          "min": undefined,
+          "now": undefined,
+          "text": undefined,
+        }
+      }
+      accessible={true}
+      collapsable={false}
+      focusable={true}
+      onBlur={[Function]}
+      onClick={[Function]}
+      onFocus={[Function]}
+      onResponderGrant={[Function]}
+      onResponderMove={[Function]}
+      onResponderRelease={[Function]}
+      onResponderTerminate={[Function]}
+      onResponderTerminationRequest={[Function]}
+      onStartShouldSetResponder={[Function]}
+    >
+      <View
+        style={
+          [
+            {
+              "alignItems": "center",
+              "backgroundColor": "maroon",
+              "borderRadius": 5,
+              "height": 50,
+              "justifyContent": "center",
+              "marginBottom": 20,
+              "marginTop": 20,
+              "width": 100,
+            },
+            false,
+          ]
+        }
+      >
+        <Text
+          style={
+            {
+              "color": "white",
+              "fontFamily": "RobotoCondensed-Regular",
+            }
+          }
+        >
+          Unfavorite all
+        </Text>
+      </View>
+    </View>
+    <View
+      style={
+        {
+          "alignItems": "center",
+          "height": 800,
+          "width": 385,
+        }
+      }
+    >
+      <Text
+        style={
+          {
+            "fontFamily": "RobotoCondensed-Regular",
+            "fontSize": 24,
+          }
+        }
+      >
+        You have no favorited events!
+      </Text>
+    </View>
+  </View>
+</RCTScrollView>
+`;

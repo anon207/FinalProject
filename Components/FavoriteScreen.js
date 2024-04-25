@@ -9,6 +9,23 @@ export const FavoritesScreen = () => {
     setFavorites(prevFavorites => prevFavorites.filter(favorite => favorite.Id !== event.Id));
   };
 
+  const formatDate = (dateString) => {
+    const monthNames = [
+      "January", "February", "March",
+      "April", "May", "June", "July",
+      "August", "September", "October",
+      "November", "December"
+    ];
+    const day = Number(dateString.split("-")[2]);
+    const monthIndex = Number(dateString.split("-")[1]);
+    const month = monthNames[monthIndex-1];
+    const daySuffix = (day === 1 || day === 21 || day === 31) ? 'st' :
+                      (day === 2 || day === 22) ? 'nd' :
+                      (day === 3 || day === 23) ? 'rd' : 'th';
+
+    return `${month} ${day}${daySuffix}`;
+  };
+
   return(
     <ScrollView contentContainerStyle={FavoriteScreenStyles.defualtView}>
       <Pressable onPress={() => setFavorites([])}>
@@ -33,6 +50,9 @@ export const FavoritesScreen = () => {
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.name}</Text>
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.time}</Text>
           <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{event.location}</Text>
+          <View style={FavoriteScreenStyles.dateStyle}>
+          <Text style={{ fontFamily: 'RobotoCondensed-Bold' }}>{formatDate(event.date)}</Text>
+          </View>
           <View style={FavoriteScreenStyles.bottomBar} />
           <Pressable
             key={event.Id}
@@ -51,6 +71,16 @@ export const FavoritesScreen = () => {
 };
 
 const FavoriteScreenStyles = StyleSheet.create({  
+  dateStyle: {
+    width: 80,
+    height: 20,
+    //backgroundColor: 'lightgrey',
+    justifyContent: 'center',
+    alignItems: 'flex-start',
+    position: 'absolute',
+    left: 10,
+    top: 10,
+  },
   pressedEvt: {
     backgroundColor: 'rgba(87, 0, 0, 1.0)',
   },
